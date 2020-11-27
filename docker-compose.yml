@@ -1,0 +1,37 @@
+version: "3.5"
+services:
+  db:
+    container_name: mendes-soft_db
+    image: postgres
+    restart: always
+    expose:
+      - "5432"
+    ports:
+      - "54321:5432"
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: mr_mendes
+      POSTGRES_PASSWORD: 141809
+    networks:
+      - net_db
+
+  backend:
+    container_name: mendes-soft_api
+    build: ./
+    working_dir: /home/backend
+    restart: always
+    environment:
+      NODE_ENV: "development"
+      TZ: "America/Bahia"
+    networks:
+      - net_db
+    ports:
+      - 8080:3333
+    volumes:
+      - ./mendes-soft:/home/backend
+    depends_on:
+      - db
+      
+networks:
+  net_db:

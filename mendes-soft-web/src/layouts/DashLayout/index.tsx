@@ -27,19 +27,19 @@ const DashboardLayout: React.FC<LayoutProps> = ({
             <BiAbacus size={20} />
             Dashboard
           </MenuItem>
-          <MenuItem to="/products" activeClassName="selected">
+          <MenuItem to="/produtos" activeClassName="selected">
             <BiCabinet size={20} />
             Produto
           </MenuItem>
-          <MenuItem to="/sales" activeClassName="selected">
+          <MenuItem to="/vendas" activeClassName="selected">
             <BiCart size={20} />
             Venda
           </MenuItem>
-          <MenuItem to="/purchases" activeClassName="selected">
+          <MenuItem to="/compras" activeClassName="selected">
             <BiPurchaseTagAlt size={20} />
             Compra
           </MenuItem>
-          <MenuItem to="/employees" activeClassName="selected">
+          <MenuItem to="/funcionarios" activeClassName="selected">
             <BiGroup size={20} />
             Funcionário
           </MenuItem>

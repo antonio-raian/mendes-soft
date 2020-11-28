@@ -5,8 +5,8 @@ import React, { useMemo } from "react";
 const Employees: React.FC = () => {
   const buttons = useMemo(() => {
     return [
-      { id: 1, label: "Funcionários", path: "/employees/list" },
-      { id: 2, label: "Relatórios", path: "/employees/report" },
+      { id: 1, label: "Funcionários", path: "/funcionarios/lista" },
+      { id: 2, label: "Relatórios", path: "/funcionarios/relatorios" },
     ];
   }, []);
 

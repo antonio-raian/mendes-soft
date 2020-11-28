@@ -5,9 +5,9 @@ import React, { useMemo } from "react";
 const Products: React.FC = () => {
   const buttons = useMemo(() => {
     return [
-      { id: 1, label: "Produtos", path: "/products/list" },
-      { id: 2, label: "Categorias", path: "/categories/list" },
-      { id: 3, label: "Relatórios", path: "/products/report" },
+      { id: 1, label: "Produtos", path: "/produtos/lista" },
+      { id: 2, label: "Categorias", path: "/categorias/lista" },
+      { id: 3, label: "Relatórios", path: "/produtos/relatorios" },
     ];
   }, []);
 

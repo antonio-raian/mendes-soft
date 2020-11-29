@@ -11,7 +11,18 @@ export const Container = styled.section`
       text-align: left;
       font-weight: 500;
       font-size: 18px;
-      background-color: #007fff1f;
+      background-color: #07f3;
+
+      &:hover {
+        background-color: #07f5;
+      }
+
+      &:active {
+        background-color: #07f7;
+      }
+    }
+    .selected {
+      background-color: #07f7;
     }
 
     tbody {
@@ -28,19 +39,12 @@ export const Container = styled.section`
 
     td {
       padding: 20px 30px;
-      border: 0;
+      border-bottom: 2px solid #eee;
       background: #fff;
       font-weight: 500;
       font-size: 18px;
 
       color: #1d1d1d;
-    }
-
-    td:first-child {
-      border-radius: 5px 0 0 5px;
-    }
-    td:last-child {
-      border-radius: 0 5px 5px 0;
     }
   }
 `;

@@ -1,15 +1,28 @@
 import TableContainer from "@/components/TableContainer";
+import TopLists from "@/components/TopLists";
 import SecondLayout from "@/layouts/SecondLayout";
-import React, { useCallback, useState } from "react";
+import changeSearchBy from "@/utils/changeSearch";
+import React, { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import ModalCreateCategory from "../../components/ModalCreate";
 import ModalDetailsCategory from "../../components/ModalDetails";
-import { Buttons, Container } from "./styles";
+import { Container } from "./styles";
+
+const handle = [
+  { id: "id", name: "Cód. Interno" },
+  { id: "name", name: "Nome" },
+  { id: "description", name: "Descrição" },
+];
 
 const CategoryList: React.FC = () => {
   const [selectable, setSelectable] = useState("");
   const [modalCreate, setModalCreate] = useState(false);
   const [modalDetails, setModalDetails] = useState(false);
+
+  const [searchBy, setSearchBy] = useState("id");
+  useEffect(() => {
+    changeSearchBy(searchBy, setSearchBy, handle);
+  }, [searchBy]);
 
   const changeModalDetails = useCallback(() => {
     setModalDetails((states) => !states);
@@ -30,20 +43,30 @@ const CategoryList: React.FC = () => {
       />
 
       <Container>
-        <Buttons>
+        <TopLists>
           <button onClick={changeModalCreate}>Nova Categoria</button>
+
           <div>
             <FiSearch size={20} />
-            <input placeholder="Buscar" name="search" />
+            <input
+              placeholder={`Buscar por ${
+                handle.find((h) => h.id === searchBy)?.name
+              }`}
+              name="search"
+            />
           </div>
-        </Buttons>
+        </TopLists>
         <TableContainer>
           <table>
             <thead>
               <tr>
-                <th>Cód. Interno</th>
-                <th>Nome</th>
-                <th>Descrição</th>
+                {handle.map((h) => (
+                  <th
+                    id={h.id}
+                    onClick={() => changeSearchBy(h.id, setSearchBy, handle)}>
+                    {h.name}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>

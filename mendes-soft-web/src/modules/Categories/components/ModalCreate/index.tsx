@@ -6,10 +6,9 @@ import * as Yup from "yup";
 import Input from "@/components/Form/Input";
 
 import { Container } from "./styles";
-import Select from "@/components/Form/Select";
 import { FiCheck } from "react-icons/fi";
-import { FormHandles, Scope } from "@unform/core";
-import { getValidationErrors } from "@/services/getValidationErrors";
+import { FormHandles } from "@unform/core";
+import { getValidationErrors } from "@/utils/getValidationErrors";
 import { useToast } from "@/hooks/toast";
 import ModalComponent from "@/components/Modal";
 

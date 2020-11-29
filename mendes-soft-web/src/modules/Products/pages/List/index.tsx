@@ -1,16 +1,30 @@
 import TableContainer from "@/components/TableContainer";
+import TopLists from "@/components/TopLists";
 import SecondLayout from "@/layouts/SecondLayout";
-import React, { useCallback, useState } from "react";
+import changeSearchBy from "@/utils/changeSearch";
+import React, { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
 import ModalDetails from "../../components/ModalDetails";
-import { Buttons, Container } from "./styles";
+import { Container } from "./styles";
+
+const handle = [
+  { id: "id", name: "Cód. Interno" },
+  { id: "name", name: "Nome" },
+  { id: "bar_code", name: "Cód. Barra" },
+  { id: "category", name: "Categoria" },
+];
 
 const ProductList: React.FC = () => {
   const history = useHistory();
 
   const [selectable, setSelectable] = useState("");
   const [modalDetails, setModalDetails] = useState(false);
+
+  const [searchBy, setSearchBy] = useState("id");
+  useEffect(() => {
+    changeSearchBy(searchBy, setSearchBy, handle);
+  }, [searchBy]);
 
   const changeModal = useCallback(() => {
     setModalDetails((states) => !states);
@@ -25,23 +39,31 @@ const ProductList: React.FC = () => {
       />
 
       <Container>
-        <Buttons>
+        <TopLists>
           <button onClick={() => history.push("/produtos/cadastro")}>
             Cadastrar Produto
           </button>
           <div>
             <FiSearch size={20} />
-            <input placeholder="Buscar" name="search" />
+            <input
+              placeholder={`Buscar por ${
+                handle.find((h) => h.id === searchBy)?.name
+              }`}
+              name="search"
+            />
           </div>
-        </Buttons>
+        </TopLists>
         <TableContainer>
           <table>
             <thead>
               <tr>
-                <th>Cód. Interno</th>
-                <th>Nome</th>
-                <th>Cód. Barra</th>
-                <th>Categoria</th>
+                {handle.map((h) => (
+                  <th
+                    id={h.id}
+                    onClick={() => changeSearchBy(h.id, setSearchBy, handle)}>
+                    {h.name}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>

@@ -6,7 +6,7 @@ import { Back, Container, Logo, Title } from "./styles";
 import icon from "@/assets/images/icon.png";
 
 interface TopProps {
-  title: string;
+  title?: string;
 }
 
 const TopModule = ({ title }: TopProps) => {

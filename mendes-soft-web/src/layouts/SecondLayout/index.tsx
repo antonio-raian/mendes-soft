@@ -3,7 +3,7 @@ import React from "react";
 import { Container, Content } from "./styles";
 
 interface LayoutProps {
-  topTitle: string;
+  topTitle?: string;
 }
 
 const SecondLayout: React.FC<LayoutProps> = ({ topTitle, children }) => {

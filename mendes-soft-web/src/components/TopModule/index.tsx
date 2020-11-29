@@ -21,12 +21,13 @@ const TopModule = ({ title }: TopProps) => {
           }}
         />
       </Back>
+      <Logo>
+        <img src={icon} alt="logo" />
+      </Logo>
       <Title>
-        <Logo>
-          <img src={icon} alt="logo" />
-        </Logo>
         <span>{title}</span>
       </Title>
+      <Back></Back>
     </Container>
   );
 };

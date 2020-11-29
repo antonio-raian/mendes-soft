@@ -2,10 +2,11 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
-  height: 10%;
+  height: 10vh;
   width: 100%;
   background-color: #007fff11;
   align-items: center;
+  justify-content: center;
 `;
 
 export const Back = styled.div`
@@ -16,8 +17,9 @@ export const Back = styled.div`
 
 export const Logo = styled.div`
   display: flex;
-  width: 40%;
   justify-content: flex-end;
+  align-items: center;
+  width: 40%;
   img {
     width: 18%;
   }
@@ -25,12 +27,14 @@ export const Logo = styled.div`
 
 export const Title = styled.div`
   display: flex;
-  width: 90%;
+  width: 50%;
   align-items: center;
 
   text-transform: uppercase;
+  font-weight: 700;
 
   span {
     padding: 0 20px;
+    width: 20%;
   }
 `;

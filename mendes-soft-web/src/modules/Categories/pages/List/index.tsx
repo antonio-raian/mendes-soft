@@ -2,28 +2,36 @@ import TableContainer from "@/components/TableContainer";
 import SecondLayout from "@/layouts/SecondLayout";
 import React, { useCallback, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import ModalDetailsProduct from "../../components/ModalDetails";
+import ModalCreateCategory from "../../components/ModalCreate";
+import ModalDetailsCategory from "../../components/ModalDetails";
 import { Buttons, Container } from "./styles";
 
 const CategoryList: React.FC = () => {
   const [selectable, setSelectable] = useState("");
+  const [modalCreate, setModalCreate] = useState(false);
   const [modalDetails, setModalDetails] = useState(false);
 
-  const changeModal = useCallback(() => {
+  const changeModalDetails = useCallback(() => {
     setModalDetails((states) => !states);
   }, [setModalDetails]);
 
+  const changeModalCreate = useCallback(() => {
+    setModalCreate((states) => !states);
+  }, [setModalCreate]);
+
   return (
     <SecondLayout topTitle="Categorias">
-      <ModalDetailsProduct
+      <ModalCreateCategory isOpen={modalCreate} setIsOpen={changeModalCreate} />
+
+      <ModalDetailsCategory
         isOpen={modalDetails}
-        setIsOpen={changeModal}
+        setIsOpen={changeModalDetails}
         itemId={selectable}
       />
 
       <Container>
         <Buttons>
-          <button onClick={() => {}}>Nova Categoria</button>
+          <button onClick={changeModalCreate}>Nova Categoria</button>
           <div>
             <FiSearch size={20} />
             <input placeholder="Buscar" name="search" />
@@ -35,20 +43,18 @@ const CategoryList: React.FC = () => {
               <tr>
                 <th>Cód. Interno</th>
                 <th>Nome</th>
-                <th>Cód. Barra</th>
-                <th>Categoria</th>
+                <th>Descrição</th>
               </tr>
             </thead>
             <tbody>
               <tr
                 onClick={() => {
                   setSelectable("1");
-                  changeModal();
+                  changeModalDetails();
                 }}>
                 <td>1</td>
                 <td>Remédio</td>
                 <td>123123123</td>
-                <td>Categoria </td>
               </tr>
             </tbody>
           </table>

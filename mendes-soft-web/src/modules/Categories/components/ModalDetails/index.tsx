@@ -2,6 +2,7 @@ import ModalComponent from "@/components/Modal";
 import React, { useCallback, useState } from "react";
 import { FiCheck, FiEdit, FiTrash2, FiX } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
+import ModalUpdateCategory from "../ModalUpdate";
 import { Buttons, Container, Details } from "./styles";
 
 interface ModalProps {
@@ -10,23 +11,24 @@ interface ModalProps {
   itemId: string;
 }
 
-const ModalDetailsProduct: React.FC<ModalProps> = ({
+const ModalDetailsCategory: React.FC<ModalProps> = ({
   isOpen,
   setIsOpen,
   itemId,
 }) => {
   const history = useHistory();
 
-  const [modalDelete, setModalDelete] = useState(false);
+  const [modalDeleteCategory, setModalDeleteCategory] = useState(false);
+  const [modalUpdateCategory, setModalUpdateCategory] = useState(false);
 
-  const redirectToUpdate = useCallback(() => {
-    history.push("/produtos/atualiza", { itemId });
-  }, [itemId, history]);
+  const changeModalUpdate = useCallback(() => {
+    setModalUpdateCategory((state) => !state);
+  }, []);
 
   const handleDelete = useCallback(() => {
-    setModalDelete(false);
+    setModalDeleteCategory(false);
     setIsOpen();
-  }, [setIsOpen, setModalDelete]);
+  }, [setIsOpen, setModalDeleteCategory]);
 
   return (
     <>
@@ -46,24 +48,15 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
             <p>
               <b>Descrição: </b>Remédo de fezes
             </p>
-            <p>
-              <b>Categoria: </b>Farmacia
-            </p>
-            <p>
-              <b>Lucro: </b>10%
-            </p>
-            <p>
-              <b>Código de Barra: </b>123654987
-            </p>
           </Details>
           <Buttons>
-            <button onClick={redirectToUpdate}>
+            <button onClick={changeModalUpdate}>
               <FiEdit size={20} />
               Editar
             </button>
             <button
               className="error"
-              onClick={() => setModalDelete((state) => !state)}>
+              onClick={() => setModalDeleteCategory((state) => !state)}>
               <FiTrash2 size={20} />
               Excluir
             </button>
@@ -73,13 +66,13 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
 
       {/* Modal Delete */}
       <ModalComponent
-        title="Remover Produto"
-        isOpen={modalDelete}
+        title="Remover Categoria"
+        isOpen={modalDeleteCategory}
         setIsOpen={() => {}}
         width={500}
         closeOnOverlay={true}>
         <Container>
-          <h3>Deseja remover o produto {"nome produto"}?</h3>
+          <h3>Deseja remover a categoria {"nome produto"}?</h3>
           <Buttons>
             <button onClick={handleDelete}>
               <FiCheck size={20} />
@@ -87,15 +80,22 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
             </button>
             <button
               className="error"
-              onClick={() => setModalDelete((state) => !state)}>
+              onClick={() => setModalDeleteCategory((state) => !state)}>
               <FiX size={20} />
               Não
             </button>
           </Buttons>
         </Container>
       </ModalComponent>
+
+      {/* Modal Update */}
+      <ModalUpdateCategory
+        isOpen={modalUpdateCategory}
+        setIsOpen={changeModalUpdate}
+        itemId={itemId}
+      />
     </>
   );
 };
 
-export default ModalDetailsProduct;
+export default ModalDetailsCategory;

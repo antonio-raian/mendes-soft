@@ -3,15 +3,20 @@ import { Form } from "@unform/web";
 
 import * as Yup from "yup";
 
-import TopModule from "@/components/TopModule";
 import Input from "@/components/Form/Input";
 
-import { Container, Content } from "./styles";
+import { Container } from "./styles";
 import Select from "@/components/Form/Select";
 import { FiCheck } from "react-icons/fi";
 import { FormHandles, Scope } from "@unform/core";
 import { getValidationErrors } from "@/services/getValidationErrors";
 import { useToast } from "@/hooks/toast";
+import ModalComponent from "@/components/Modal";
+
+interface ModalProps {
+  isOpen: boolean;
+  setIsOpen: () => void;
+}
 
 Yup.setLocale({
   number: {
@@ -19,7 +24,7 @@ Yup.setLocale({
   },
 });
 
-const CategoryCreate: React.FC = () => {
+const ModalCreateCategory: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const formRef = useRef<FormHandles>(null);
 
   const toast = useToast();
@@ -30,13 +35,8 @@ const CategoryCreate: React.FC = () => {
         formRef.current?.setErrors({});
 
         const schope = Yup.object().shape({
-          category: Yup.number().required("Categoria é obrigatória!").min(1),
-          item: Yup.object().shape({
-            bar_code: Yup.string().required("Código de Barra Obrigatório"),
-            name: Yup.string().required("Nome Obrigatório"),
-            description: Yup.string(),
-            gain: Yup.number(),
-          }),
+          name: Yup.string().required("Nome Obrigatório"),
+          description: Yup.string(),
         });
 
         await schope.validate(data, {
@@ -47,54 +47,43 @@ const CategoryCreate: React.FC = () => {
           type: "success",
           description: `Salvou ${data}`,
         });
+        setIsOpen();
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErrors(error);
 
           formRef.current?.setErrors(errors);
-          toast.addToast({
-            title: "Falha",
-            type: "error",
-            description: `${Object.values(errors)}`,
-          });
           return;
         }
+
+        toast.addToast({
+          title: "Falha",
+          type: "error",
+          description: `Erro ao cadastrar Categoria: ${error.response?.message}`,
+        });
       }
     },
     [toast]
   );
 
   return (
-    <Container>
-      <TopModule title="Cadastro de Produto" />
-      <Content>
+    <ModalComponent
+      title="Cadastro Categoria"
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      width={500}>
+      <Container>
         <Form ref={formRef} onSubmit={handleSubmit} style={{ width: "100%" }}>
-          <Scope path="item">
-            <Input name="bar_code" label="Código de Barra" />
-            <Input name="name" label="Nome" />
-            <Input name="description" label="Descrição" />
-            <Input
-              name="gain"
-              label="Lucro (%)"
-              type="number"
-              min={0}
-              value={0}
-            />
-          </Scope>
-          <Select
-            defaultValue={{ label: "Selecione uma Categoria", value: 0 }}
-            name="category"
-            label="Categoria"
-            options={[{ label: "Teste1", value: 1 }]}
-          />
+          <Input name="name" label="Nome" />
+          <Input name="description" label="Descrição" />
           <button type="submit">
             <FiCheck size={25} />
             Concluir
           </button>
         </Form>
-      </Content>
-    </Container>
+      </Container>
+    </ModalComponent>
   );
 };
 
-export default CategoryCreate;
+export default ModalCreateCategory;

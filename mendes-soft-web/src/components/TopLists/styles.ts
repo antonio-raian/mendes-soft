@@ -6,6 +6,7 @@ export const Container = styled.div`
   width: 90%;
   justify-content: space-between;
   align-items: center;
+  padding-top: 15px;
 
   div {
     display: flex;
@@ -24,5 +25,8 @@ export const Container = styled.div`
 
   button {
     padding: 2vh;
+    background-color: #07f5;
+    border: 0;
+    border-radius: 5px;
   }
 `;

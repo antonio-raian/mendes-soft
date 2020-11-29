@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  RouteProps as CustomRouteProps,
+  Route as CustomRoute,
+  Redirect,
+} from "react-router-dom";
 
 import DashBoard from "@/pages/DashBoard";
 import Products from "@/pages/Products";
@@ -20,34 +25,118 @@ import EmployeeUpdate from "@/modules/Employees/pages/Update";
 import SaleCreate from "@/modules/Sales/pages/Create";
 import SaleUpdate from "@/modules/Sales/pages/Update";
 import NonPage from "@/pages/NonPage";
+import { useAuth } from "@/hooks/auth";
+import Login from "@/pages/Login";
 
 const Routes = () => {
   return (
     <BrowserRouter>
-      <Route exact path="/dashboard" component={DashBoard} />
-      <Route exact path="/produtos" component={Products} />
-      <Route exact path="/produtos/lista" component={ProductList} />
-      <Route exact path="/produtos/cadastro" component={ProductCreate} />
-      <Route exact path="/produtos/atualiza" component={ProductUpdate} />
-      <Route exact path="/produtos/relatorios" component={NonPage} />
-      <Route exact path="/categorias/lista" component={CategoryList} />
-      <Route exact path="/categorias/relatorios" component={NonPage} />
-      <Route exact path="/vendas" component={Sales} />
-      <Route exact path="/vendas/lista" component={SaleList} />
-      <Route exact path="/vendas/cadastro" component={SaleCreate} />
-      <Route exact path="/vendas/atualiza" component={SaleUpdate} />
-      <Route exact path="/vendas/relatorios" component={NonPage} />
-      <Route exact path="/compras" component={Purchases} />
-      <Route exact path="/compras/lista" component={PurchaseList} />
-      <Route exact path="/compras/cadastro" component={PurchaseCreate} />
-      <Route exact path="/compras/atualiza" component={PurchaseUpdate} />
-      <Route exact path="/compras/relatorios" component={NonPage} />
-      <Route exact path="/funcionarios" component={Employees} />
-      <Route exact path="/funcionarios/lista" component={EmployeeList} />
-      <Route exact path="/funcionarios/cadastro" component={EmployeeCreate} />
-      <Route exact path="/funcionarios/atualiza" component={EmployeeUpdate} />
-      <Route exact path="/funcionarios/relatorios" component={NonPage} />
+      <Route exact path="/" component={Login} />
+      <Route isPrivate exact path="/dashboard" component={DashBoard} />
+      <Route isPrivate exact path="/produtos" component={Products} />
+      <Route isPrivate exact path="/produtos/lista" component={ProductList} />
+      <Route
+        isPrivate
+        exact
+        path="/produtos/cadastro"
+        component={ProductCreate}
+      />
+      <Route
+        isPrivate
+        exact
+        path="/produtos/atualiza"
+        component={ProductUpdate}
+      />
+      <Route isPrivate exact path="/produtos/relatorios" component={NonPage} />
+      <Route
+        isPrivate
+        exact
+        path="/categorias/lista"
+        component={CategoryList}
+      />
+      <Route
+        isPrivate
+        exact
+        path="/categorias/relatorios"
+        component={NonPage}
+      />
+      <Route isPrivate exact path="/vendas" component={Sales} />
+      <Route isPrivate exact path="/vendas/lista" component={SaleList} />
+      <Route isPrivate exact path="/vendas/cadastro" component={SaleCreate} />
+      <Route isPrivate exact path="/vendas/atualiza" component={SaleUpdate} />
+      <Route isPrivate exact path="/vendas/relatorios" component={NonPage} />
+      <Route isPrivate exact path="/compras" component={Purchases} />
+      <Route isPrivate exact path="/compras/lista" component={PurchaseList} />
+      <Route
+        isPrivate
+        exact
+        path="/compras/cadastro"
+        component={PurchaseCreate}
+      />
+      <Route
+        isPrivate
+        exact
+        path="/compras/atualiza"
+        component={PurchaseUpdate}
+      />
+      <Route isPrivate exact path="/compras/relatorios" component={NonPage} />
+      <Route isPrivate exact path="/funcionarios" component={Employees} />
+      <Route
+        isPrivate
+        exact
+        path="/funcionarios/lista"
+        component={EmployeeList}
+      />
+      <Route
+        isPrivate
+        exact
+        path="/funcionarios/cadastro"
+        component={EmployeeCreate}
+      />
+      <Route
+        isPrivate
+        exact
+        path="/funcionarios/atualiza"
+        component={EmployeeUpdate}
+      />
+      <Route
+        isPrivate
+        exact
+        path="/funcionarios/relatorios"
+        component={NonPage}
+      />
     </BrowserRouter>
+  );
+};
+
+interface RouteProps extends CustomRouteProps {
+  isPrivate?: boolean;
+  component: React.ComponentType;
+}
+
+const Route: React.FC<RouteProps> = ({
+  isPrivate = false,
+  component: Component,
+  ...rest
+}) => {
+  const { user } = useAuth();
+
+  return (
+    <CustomRoute
+      {...rest}
+      render={({ location }) => {
+        return isPrivate === !!user ? (
+          <Component />
+        ) : (
+          <Redirect
+            to={{
+              pathname: isPrivate ? "/" : "/dashboard",
+              state: { from: location },
+            }}
+          />
+        );
+      }}
+    />
   );
 };
 

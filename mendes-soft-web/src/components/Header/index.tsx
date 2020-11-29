@@ -5,12 +5,15 @@ import { FiPower } from "react-icons/fi";
 import { Button, Container, Hour, Logo } from "./styles";
 
 import logo from "@/assets/images/Logo.png";
+import { useAuth } from "@/hooks/auth";
 
 interface HeaderProps {
   actionButton?: () => void;
 }
 
 const Header = ({ actionButton }: HeaderProps) => {
+  const { signOut } = useAuth();
+
   const [hour, setHour] = useState<number>(new Date().getHours());
   const [minute, setMinute] = useState<number>(new Date().getMinutes());
 
@@ -31,7 +34,7 @@ const Header = ({ actionButton }: HeaderProps) => {
       </Hour>
       <Button>
         <button onClick={actionButton}>
-          <FiPower size={25} />
+          <FiPower size={25} onClick={signOut} />
         </button>
       </Button>
     </Container>

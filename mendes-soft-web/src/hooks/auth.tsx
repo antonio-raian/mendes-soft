@@ -1,5 +1,5 @@
-import React, { createContext, useState, useCallback, useContext } from 'react';
-import api from '@/services/api';
+import React, { createContext, useState, useCallback, useContext } from "react";
+import api from "@/services/api";
 
 export interface Credentials {
   username: string;
@@ -24,8 +24,8 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState(() => {
-    const token = localStorage.getItem('@posto7:token');
-    const user = localStorage.getItem('@posto7:user');
+    const token = localStorage.getItem("@mendes-soft:token");
+    const user = localStorage.getItem("@mendes-soft:user");
 
     if (token && user) {
       api.defaults.headers.authorization = `Bearer ${token}`;
@@ -39,15 +39,15 @@ export const AuthProvider: React.FC = ({ children }) => {
     try {
       setLoading(true);
 
-      const response = await api.post('/login', {
+      const response = await api.post("/login", {
         username,
         password,
       });
 
       const { user, token: jwt } = response.data;
 
-      localStorage.setItem('@posto7:token', jwt.token);
-      localStorage.setItem('@posto7:user', JSON.stringify(user));
+      localStorage.setItem("@mendes-soft:token", jwt.token);
+      localStorage.setItem("@mendes-soft:user", JSON.stringify(user));
 
       api.defaults.headers.authorization = `Bearer ${jwt.token}`;
 
@@ -58,8 +58,8 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@posto7:token');
-    localStorage.removeItem('@posto7:user');
+    localStorage.removeItem("@mendes-soft:token");
+    localStorage.removeItem("@mendes-soft:user");
 
     setData({} as AuthState);
   }, []);

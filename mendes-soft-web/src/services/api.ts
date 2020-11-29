@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-const urlServer = "192.168.0.108:8080";
+const urlServer = "http://192.168.0.108:8080";
 
 const api = Axios.create({
   baseURL: urlServer,

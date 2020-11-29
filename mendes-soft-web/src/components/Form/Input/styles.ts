@@ -63,4 +63,9 @@ export const Header = styled.div`
     font-size: 16px;
     color: #bdbdbd;
   }
+
+  text {
+    color: red;
+    font-size: 12px;
+  }
 `;

@@ -21,10 +21,10 @@ const ModalComponent: React.FC<ModalProps> = ({
   height,
   closeOnOverlay,
 }) => {
-  const [open, setOpen] = useState(isOpen);
+  const [opened, setOpened] = useState(isOpen);
 
   useEffect(() => {
-    setOpen(isOpen);
+    setOpened(isOpen);
   }, [isOpen]);
 
   const handleClose = useCallback(() => {
@@ -33,9 +33,9 @@ const ModalComponent: React.FC<ModalProps> = ({
 
   return (
     <Modal
-      isOpen={open}
+      isOpen={opened}
       onRequestClose={setIsOpen}
-      shouldCloseOnOverlayClick={closeOnOverlay || false}
+      shouldCloseOnOverlayClick={false}
       shouldCloseOnEsc={true}
       ariaHideApp={false}
       style={{

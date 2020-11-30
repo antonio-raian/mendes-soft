@@ -11,6 +11,7 @@ import { FormHandles } from "@unform/core";
 import { getValidationErrors } from "@/utils/getValidationErrors";
 import { useToast } from "@/hooks/toast";
 import ModalComponent from "@/components/Modal";
+import api from "@/services/api";
 
 interface ModalProps {
   isOpen: boolean;
@@ -41,10 +42,11 @@ const ModalCreateCategory: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         await schope.validate(data, {
           abortEarly: false,
         });
+        await api.post("/category", { category: data });
         toast.addToast({
           title: "Sucesso",
           type: "success",
-          description: `Salvou ${data}`,
+          description: `Salvou ${JSON.stringify(data)}`,
         });
         setIsOpen();
       } catch (error) {

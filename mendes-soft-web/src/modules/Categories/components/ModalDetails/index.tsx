@@ -1,7 +1,8 @@
 import ModalComponent from "@/components/Modal";
-import React, { useCallback, useState } from "react";
+import { Category } from "@/interfaces";
+import api from "@/services/api";
+import React, { useCallback, useEffect, useState } from "react";
 import { FiCheck, FiEdit, FiTrash2, FiX } from "react-icons/fi";
-import { useHistory } from "react-router-dom";
 import ModalUpdateCategory from "../ModalUpdate";
 import { Buttons, Container, Details } from "./styles";
 
@@ -16,8 +17,7 @@ const ModalDetailsCategory: React.FC<ModalProps> = ({
   setIsOpen,
   itemId,
 }) => {
-  const history = useHistory();
-
+  const [category, setCategory] = useState({} as Category);
   const [modalDeleteCategory, setModalDeleteCategory] = useState(false);
   const [modalUpdateCategory, setModalUpdateCategory] = useState(false);
 
@@ -25,28 +25,49 @@ const ModalDetailsCategory: React.FC<ModalProps> = ({
     setModalUpdateCategory((state) => !state);
   }, []);
 
-  const handleDelete = useCallback(() => {
+  useEffect(() => {
+    isOpen && handleLoad();
+  }, [isOpen, modalUpdateCategory]);
+
+  const handleLoad = async () => {
+    try {
+      const response = await api.get<Category[]>(`/category?id=${itemId}`);
+
+      setCategory(response.data[0]);
+    } catch (e) {
+      console.log("erro no details", e.response);
+    }
+  };
+
+  const handleDelete = useCallback(async () => {
     setModalDeleteCategory(false);
-    setIsOpen();
-  }, [setIsOpen, setModalDeleteCategory]);
+    try {
+      await api.delete(`/category/${category.id}`);
+
+      setIsOpen();
+    } catch (e) {}
+  }, [setIsOpen, category]);
 
   return (
     <>
       <ModalComponent
         title="Detalhes de Produto"
         isOpen={isOpen}
-        setIsOpen={() => setIsOpen()}
+        setIsOpen={setIsOpen}
         width={500}>
         <Container>
           <Details>
             <p>
-              <b>Código Interno: </b>123
+              <b>Código Interno: </b>
+              {category.id}
             </p>
             <p>
-              <b>Nome: </b>Remédo
+              <b>Nome: </b>
+              {category.name}
             </p>
             <p>
-              <b>Descrição: </b>Remédo de fezes
+              <b>Descrição: </b>
+              {category.description}
             </p>
           </Details>
           <Buttons>

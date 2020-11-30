@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
 import * as Yup from "yup";
@@ -11,6 +11,8 @@ import { FormHandles } from "@unform/core";
 import { getValidationErrors } from "@/utils/getValidationErrors";
 import { useToast } from "@/hooks/toast";
 import ModalComponent from "@/components/Modal";
+import api from "@/services/api";
+import { Category } from "@/interfaces";
 
 interface ModalProps {
   isOpen: boolean;
@@ -32,6 +34,21 @@ const ModalUpdateCategory: React.FC<ModalProps> = ({
   const formRef = useRef<FormHandles>(null);
 
   const toast = useToast();
+  const [category, setCategory] = useState({} as Category);
+
+  const handleLoad = async () => {
+    try {
+      const response = await api.get<Category[]>(`/category?id=${itemId}`);
+
+      setCategory(response.data[0]);
+    } catch (e) {
+      console.log("erro no update", e.response);
+    }
+  };
+
+  useEffect(() => {
+    isOpen && handleLoad();
+  }, [isOpen]);
 
   const handleSubmit = useCallback(
     async (data) => {
@@ -46,6 +63,9 @@ const ModalUpdateCategory: React.FC<ModalProps> = ({
         await schope.validate(data, {
           abortEarly: false,
         });
+
+        await api.put("/category", { category: { id: category.id, ...data } });
+
         toast.addToast({
           title: "Sucesso",
           type: "success",
@@ -59,25 +79,31 @@ const ModalUpdateCategory: React.FC<ModalProps> = ({
           formRef.current?.setErrors(errors);
           return;
         }
-
+        console.log(error.response);
         toast.addToast({
           title: "Falha",
           type: "error",
-          description: `Erro ao cadastrar Categoria: ${error.response?.message}`,
+          description: `Erro ao editar Categoria: ${JSON.stringify(
+            error.response
+          )}`,
         });
       }
     },
-    [toast, setIsOpen]
+    [toast, setIsOpen, category]
   );
 
   return (
     <ModalComponent
-      title="Cadastro Categoria"
+      title="Atualização Categoria"
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       width={500}>
       <Container>
-        <Form ref={formRef} onSubmit={handleSubmit} style={{ width: "100%" }}>
+        <Form
+          initialData={category}
+          ref={formRef}
+          onSubmit={handleSubmit}
+          style={{ width: "100%" }}>
           <Input name="name" label="Nome" />
           <Input name="description" label="Descrição" />
           <button type="submit">

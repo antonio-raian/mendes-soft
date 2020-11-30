@@ -1,5 +1,7 @@
 import ModalComponent from "@/components/Modal";
-import React, { useCallback, useState } from "react";
+import { Item } from "@/interfaces";
+import api from "@/services/api";
+import React, { useCallback, useEffect, useState } from "react";
 import { FiCheck, FiEdit, FiTrash2, FiX } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
 import { Buttons, Container, Details } from "./styles";
@@ -17,16 +19,29 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
 }) => {
   const history = useHistory();
 
+  const [product, setProduct] = useState({} as Item);
   const [modalDelete, setModalDelete] = useState(false);
+  async function handleLoad() {
+    await api.get(`/item?id=${itemId}`).then((response) => {
+      setProduct(response.data[0]);
+    });
+  }
+  useEffect(() => {
+    isOpen && handleLoad();
+  }, [isOpen, itemId]);
 
   const redirectToUpdate = useCallback(() => {
     history.push("/produtos/atualiza", { itemId });
   }, [itemId, history]);
 
-  const handleDelete = useCallback(() => {
+  const handleDelete = useCallback(async () => {
     setModalDelete(false);
-    setIsOpen();
-  }, [setIsOpen, setModalDelete]);
+    try {
+      await api.delete(`/item/${product.id}`);
+
+      setIsOpen();
+    } catch (e) {}
+  }, [setIsOpen, product]);
 
   return (
     <>
@@ -38,22 +53,28 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
         <Container>
           <Details>
             <p>
-              <b>Código Interno: </b>123
+              <b>Código Interno: </b>
+              {product.id}
             </p>
             <p>
-              <b>Nome: </b>Remédo
+              <b>Nome: </b>
+              {product.name}
             </p>
             <p>
-              <b>Descrição: </b>Remédo de fezes
+              <b>Descrição: </b>
+              {product.description}
             </p>
             <p>
-              <b>Categoria: </b>Farmacia
+              <b>Categoria: </b>
+              {product.category?.name}
             </p>
             <p>
-              <b>Lucro: </b>10%
+              <b>Lucro: </b>
+              {product.gain}%
             </p>
             <p>
-              <b>Código de Barra: </b>123654987
+              <b>Código de Barra: </b>
+              {product.bar_code}
             </p>
           </Details>
           <Buttons>

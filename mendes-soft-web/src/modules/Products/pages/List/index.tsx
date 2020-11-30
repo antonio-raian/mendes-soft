@@ -1,6 +1,8 @@
 import TableContainer from "@/components/TableContainer";
 import TopLists from "@/components/TopLists";
+import { Item } from "@/interfaces";
 import SecondLayout from "@/layouts/SecondLayout";
+import api from "@/services/api";
 import changeSearchBy from "@/utils/changeSearch";
 import React, { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
@@ -18,6 +20,8 @@ const handle = [
 const ProductList: React.FC = () => {
   const history = useHistory();
 
+  const [products, setProducts] = useState<Item[]>();
+
   const [selectable, setSelectable] = useState("");
   const [modalDetails, setModalDetails] = useState(false);
 
@@ -25,6 +29,15 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
+
+  useEffect(() => {
+    async function handleLoad() {
+      await api.get("/item").then((response) => {
+        setProducts(response.data);
+      });
+    }
+    handleLoad();
+  }, [modalDetails]);
 
   const changeModal = useCallback(() => {
     setModalDetails((states) => !states);
@@ -67,16 +80,18 @@ const ProductList: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              <tr
-                onClick={() => {
-                  setSelectable("1");
-                  changeModal();
-                }}>
-                <td>1</td>
-                <td>Remédio</td>
-                <td>123123123</td>
-                <td>Categoria </td>
-              </tr>
+              {products?.map((item) => (
+                <tr
+                  onClick={() => {
+                    setSelectable(item.id);
+                    changeModal();
+                  }}>
+                  <td>{item.id}</td>
+                  <td>{item.name}</td>
+                  <td>{item.bar_code}</td>
+                  <td>{item.category.name} </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </TableContainer>

@@ -11,16 +11,34 @@ export const Container = styled.div`
 
 export const Section = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  flex-direction: column;
+
   button {
     display: flex;
-    height: 6vh;
-    width: 10vw;
+    height: 7vh;
+    width: 100%;
+    color: white;
+    text-transform: uppercase;
     justify-content: space-evenly;
     align-items: center;
-    text-align: left;
-    background-color: #07f8;
+    background-color: #ff2401;
     border-radius: 10px;
+  }
+
+  label {
+    font-size: 25px;
+  }
+
+  span {
+    color: #07f;
+    font-size: 15px;
+    margin-bottom: 25px;
+  }
+
+  p {
+    font-size: 20px;
+    margin-bottom: 30px;
   }
 `;
 
@@ -31,21 +49,10 @@ export const Button = styled.div`
   width: 100%;
 
   margin-bottom: 2vh;
-
-  > button {
-    height: 90%;
-    width: 100%;
-  }
 `;
 
 export const Separate = styled.div`
   width: 0.1vw;
   background-color: gray;
   margin: 0 1vw;
-`;
-
-export const FormFooter = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 `;

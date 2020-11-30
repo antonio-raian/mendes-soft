@@ -1,43 +1,60 @@
 import TableContainer from "@/components/TableContainer";
 import TopLists from "@/components/TopLists";
+import { useAuth } from "@/hooks/auth";
+import { Purchase } from "@/interfaces";
 import SecondLayout from "@/layouts/SecondLayout";
+import api from "@/services/api";
 import changeSearchBy from "@/utils/changeSearch";
+import { Status } from "@/utils/prefixedData";
+import { format, parseISO } from "date-fns";
 import React, { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
-import ModalDetails from "../../components/ModalDetails";
 import { Container } from "./styles";
 
 const handle = [
   { id: "id", name: "Cód. Interno" },
-  { id: "name", name: "Nome" },
-  { id: "username", name: "Usuário" },
-  { id: "active", name: "Status" },
+  { id: "create_at", name: "Data" },
+  { id: "employee_id", name: "Funcionário" },
+  { id: "value", name: "Valor" },
+  { id: "status", name: "Situação" },
 ];
 
 const PurchaseList: React.FC = () => {
   const history = useHistory();
+  const { signOut } = useAuth();
 
-  const [selectable, setSelectable] = useState("");
-  const [modalDetails, setModalDetails] = useState(false);
+  const [purchases, setPurchases] = useState<Purchase[]>();
 
   const [searchBy, setSearchBy] = useState("id");
   useEffect(() => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
 
-  const changeModal = useCallback(() => {
-    setModalDetails((states) => !states);
-  }, [setModalDetails]);
+  useEffect(() => {
+    async function handleLoad() {
+      await api
+        .get("/purchase")
+        .then((resPurch) => {
+          setPurchases(resPurch.data);
+        })
+        .catch((e) => {
+          console.log(e.response);
+          if (e.response?.status === 401) {
+            signOut();
+            history.goBack();
+          }
+        });
+    }
+    handleLoad();
+  }, [history, signOut]);
+
+  const toDetailsPage = useCallback((itemId) => {
+    history.push("/compras/detalhes", { itemId });
+  }, []);
 
   return (
     <SecondLayout topTitle="Compras">
-      <ModalDetails
-        isOpen={modalDetails}
-        setIsOpen={changeModal}
-        itemId={selectable}
-      />
-
       <Container>
         <TopLists>
           <button onClick={() => history.push("/compras/cadastro")}>
@@ -67,16 +84,18 @@ const PurchaseList: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              <tr
-                onClick={() => {
-                  setSelectable("1");
-                  changeModal();
-                }}>
-                <td>1</td>
-                <td>Remédio</td>
-                <td>123123123</td>
-                <td>Categoria </td>
-              </tr>
+              {purchases?.map((purc) => (
+                <tr
+                  onClick={() => {
+                    toDetailsPage(purc.id);
+                  }}>
+                  <td>{purc.id}</td>
+                  <td>{format(parseISO(purc.created_at), "dd/MM/yyyy")}</td>
+                  <td>{purc.employee.person.name}</td>
+                  <td>{purc.value} </td>
+                  <td>{Status.find((s) => s.value === purc.status)?.label} </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </TableContainer>

@@ -1,5 +1,6 @@
 import TableContainer from "@/components/TableContainer";
 import TopLists from "@/components/TopLists";
+import { useAuth } from "@/hooks/auth";
 import { Item } from "@/interfaces";
 import SecondLayout from "@/layouts/SecondLayout";
 import api from "@/services/api";
@@ -19,6 +20,7 @@ const handle = [
 
 const ProductList: React.FC = () => {
   const history = useHistory();
+  const { signOut } = useAuth();
 
   const [products, setProducts] = useState<Item[]>();
 
@@ -32,9 +34,18 @@ const ProductList: React.FC = () => {
 
   useEffect(() => {
     async function handleLoad() {
-      await api.get("/item").then((response) => {
-        setProducts(response.data);
-      });
+      await api
+        .get("/item")
+        .then((response) => {
+          setProducts(response.data);
+        })
+        .catch((e) => {
+          console.log(e.response);
+          if (e.response?.status === 401) {
+            signOut();
+            history.goBack();
+          }
+        });
     }
     handleLoad();
   }, [modalDetails]);

@@ -15,18 +15,12 @@ import Employees from "@/pages/Employees";
 import ProductCreate from "@/modules/Products/pages/Create";
 import ProductUpdate from "@/modules/Products/pages/Update";
 import CategoryList from "@/modules/Categories/pages/List";
-import SaleList from "@/modules/Sales/pages/List";
 import PurchaseList from "@/modules/Purchases/pages/List";
 import PurchaseCreate from "@/modules/Purchases/pages/Create";
-import PurchaseUpdate from "@/modules/Purchases/pages/Update";
-import EmployeeList from "@/modules/Employees/pages/List";
-import EmployeeCreate from "@/modules/Employees/pages/Create";
-import EmployeeUpdate from "@/modules/Employees/pages/Update";
-import SaleCreate from "@/modules/Sales/pages/Create";
-import SaleUpdate from "@/modules/Sales/pages/Update";
 import NonPage from "@/pages/NonPage";
 import { useAuth } from "@/hooks/auth";
 import Login from "@/pages/Login";
+import PurchaseDetails from "@/modules/Purchases/pages/Details";
 
 const Routes = () => {
   return (
@@ -61,9 +55,9 @@ const Routes = () => {
         component={NonPage}
       />
       <Route isPrivate exact path="/vendas" component={Sales} />
-      <Route isPrivate exact path="/vendas/lista" component={SaleList} />
-      <Route isPrivate exact path="/vendas/cadastro" component={SaleCreate} />
-      <Route isPrivate exact path="/vendas/atualiza" component={SaleUpdate} />
+      <Route isPrivate exact path="/vendas/lista" component={NonPage} />
+      <Route isPrivate exact path="/vendas/cadastro" component={NonPage} />
+      <Route isPrivate exact path="/vendas/atualiza" component={NonPage} />
       <Route isPrivate exact path="/vendas/relatorios" component={NonPage} />
       <Route isPrivate exact path="/compras" component={Purchases} />
       <Route isPrivate exact path="/compras/lista" component={PurchaseList} />
@@ -76,28 +70,23 @@ const Routes = () => {
       <Route
         isPrivate
         exact
-        path="/compras/atualiza"
-        component={PurchaseUpdate}
+        path="/compras/detalhes"
+        component={PurchaseDetails}
       />
       <Route isPrivate exact path="/compras/relatorios" component={NonPage} />
       <Route isPrivate exact path="/funcionarios" component={Employees} />
-      <Route
-        isPrivate
-        exact
-        path="/funcionarios/lista"
-        component={EmployeeList}
-      />
+      <Route isPrivate exact path="/funcionarios/lista" component={NonPage} />
       <Route
         isPrivate
         exact
         path="/funcionarios/cadastro"
-        component={EmployeeCreate}
+        component={NonPage}
       />
       <Route
         isPrivate
         exact
         path="/funcionarios/atualiza"
-        component={EmployeeUpdate}
+        component={NonPage}
       />
       <Route
         isPrivate

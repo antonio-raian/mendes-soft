@@ -20,15 +20,14 @@ export const Container = styled.div`
 `;
 
 export const Field = styled.div<FieldProps>`
+  display: flex;
+  align-items: center;
   width: 100%;
   background: #fff;
   padding: 12px 16px;
 
   border: 1px solid #dfe1e8;
   border-radius: 5px;
-
-  display: flex;
-  align-items: center;
 
   ${(props) =>
     props.isFocused &&
@@ -44,6 +43,7 @@ export const Field = styled.div<FieldProps>`
 
   input {
     flex: 1;
+    width: 100%;
     background: transparent;
     border: 0;
     color: #212121;

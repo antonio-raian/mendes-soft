@@ -1,3 +1,5 @@
+import EmptyPage from "@/components/EmptyPage";
+import Loading from "@/components/Loading";
 import TableContainer from "@/components/TableContainer";
 import TopLists from "@/components/TopLists";
 import { Category } from "@/interfaces";
@@ -27,12 +29,15 @@ const CategoryList: React.FC = () => {
   const [selectable, setSelectable] = useState("");
   const [modalCreate, setModalCreate] = useState(false);
   const [modalDetails, setModalDetails] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function handleLoad() {
+      setLoading(true);
       const response = await api.get<Category[]>("/category");
 
       setCategories(response.data);
+      setLoading(false);
     }
     handleLoad();
   }, [modalCreate, modalDetails]);
@@ -56,49 +61,59 @@ const CategoryList: React.FC = () => {
       />
 
       <SecondLayout topTitle="Categorias">
-        <Container>
-          <TopLists>
-            <button onClick={changeModalCreate}>Nova Categoria</button>
+        {loading ? (
+          <Loading />
+        ) : (
+          <Container>
+            <TopLists>
+              <button onClick={changeModalCreate}>Nova Categoria</button>
 
-            <div>
-              <FiSearch size={20} />
-              <input
-                placeholder={`Buscar por ${
-                  handle.find((h) => h.id === searchBy)?.name
-                }`}
-                name="search"
-              />
-            </div>
-          </TopLists>
-          <TableContainer>
-            <table>
-              <thead>
-                <tr>
-                  {handle.map((h) => (
-                    <th
-                      id={h.id}
-                      onClick={() => changeSearchBy(h.id, setSearchBy, handle)}>
-                      {h.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {categories.map((cat) => (
-                  <tr
-                    onClick={() => {
-                      setSelectable(cat.id);
-                      changeModalDetails();
-                    }}>
-                    <td>{cat.id}</td>
-                    <td>{cat.name}</td>
-                    <td>{cat.description}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </TableContainer>
-        </Container>
+              <div>
+                <FiSearch size={20} />
+                <input
+                  placeholder={`Buscar por ${
+                    handle.find((h) => h.id === searchBy)?.name
+                  }`}
+                  name="search"
+                />
+              </div>
+            </TopLists>
+            {categories.length <= 0 ? (
+              <EmptyPage />
+            ) : (
+              <TableContainer>
+                <table>
+                  <thead>
+                    <tr>
+                      {handle.map((h) => (
+                        <th
+                          id={h.id}
+                          onClick={() =>
+                            changeSearchBy(h.id, setSearchBy, handle)
+                          }>
+                          {h.name}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {categories.map((cat) => (
+                      <tr
+                        onClick={() => {
+                          setSelectable(cat.id);
+                          changeModalDetails();
+                        }}>
+                        <td>{cat.id}</td>
+                        <td>{cat.name}</td>
+                        <td>{cat.description}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </TableContainer>
+            )}
+          </Container>
+        )}
       </SecondLayout>
     </>
   );

@@ -1,3 +1,4 @@
+import Loading from "@/components/Loading";
 import ModalComponent from "@/components/Modal";
 import { Item } from "@/interfaces";
 import api from "@/services/api";
@@ -21,9 +22,13 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
 
   const [product, setProduct] = useState({} as Item);
   const [modalDelete, setModalDelete] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   async function handleLoad() {
+    setLoading(true);
     await api.get(`/item?id=${itemId}`).then((response) => {
       setProduct(response.data[0]);
+      setLoading(false);
     });
   }
   useEffect(() => {
@@ -51,44 +56,50 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
         setIsOpen={() => setIsOpen()}
         width={500}>
         <Container>
-          <Details>
-            <p>
-              <b>Código Interno: </b>
-              {product.id}
-            </p>
-            <p>
-              <b>Nome: </b>
-              {product.name}
-            </p>
-            <p>
-              <b>Descrição: </b>
-              {product.description}
-            </p>
-            <p>
-              <b>Categoria: </b>
-              {product.category?.name}
-            </p>
-            <p>
-              <b>Lucro: </b>
-              {product.gain}%
-            </p>
-            <p>
-              <b>Código de Barra: </b>
-              {product.bar_code}
-            </p>
-          </Details>
-          <Buttons>
-            <button onClick={redirectToUpdate}>
-              <FiEdit size={20} />
-              Editar
-            </button>
-            <button
-              className="error"
-              onClick={() => setModalDelete((state) => !state)}>
-              <FiTrash2 size={20} />
-              Excluir
-            </button>
-          </Buttons>
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              <Details>
+                <p>
+                  <b>Código Interno: </b>
+                  {product.id}
+                </p>
+                <p>
+                  <b>Nome: </b>
+                  {product.name}
+                </p>
+                <p>
+                  <b>Descrição: </b>
+                  {product.description}
+                </p>
+                <p>
+                  <b>Categoria: </b>
+                  {product.category?.name}
+                </p>
+                <p>
+                  <b>Lucro: </b>
+                  {product.gain}%
+                </p>
+                <p>
+                  <b>Código de Barra: </b>
+                  {product.bar_code}
+                </p>
+              </Details>
+              <Buttons>
+                <button onClick={redirectToUpdate}>
+                  <FiEdit size={20} />
+                  Editar
+                </button>
+                <button
+                  className="error"
+                  onClick={() => setModalDelete((state) => !state)}>
+                  <FiTrash2 size={20} />
+                  Excluir
+                </button>
+              </Buttons>
+            </>
+          )}
         </Container>
       </ModalComponent>
 

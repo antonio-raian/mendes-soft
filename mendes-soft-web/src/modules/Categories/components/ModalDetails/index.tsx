@@ -1,3 +1,4 @@
+import Loading from "@/components/Loading";
 import ModalComponent from "@/components/Modal";
 import { Category } from "@/interfaces";
 import api from "@/services/api";
@@ -18,8 +19,10 @@ const ModalDetailsCategory: React.FC<ModalProps> = ({
   itemId,
 }) => {
   const [category, setCategory] = useState({} as Category);
+
   const [modalDeleteCategory, setModalDeleteCategory] = useState(false);
   const [modalUpdateCategory, setModalUpdateCategory] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const changeModalUpdate = useCallback(() => {
     setModalUpdateCategory((state) => !state);
@@ -31,9 +34,11 @@ const ModalDetailsCategory: React.FC<ModalProps> = ({
 
   const handleLoad = async () => {
     try {
+      setLoading(true);
       const response = await api.get<Category[]>(`/category?id=${itemId}`);
 
       setCategory(response.data[0]);
+      setLoading(false);
     } catch (e) {
       console.log("erro no details", e.response);
     }
@@ -56,32 +61,38 @@ const ModalDetailsCategory: React.FC<ModalProps> = ({
         setIsOpen={setIsOpen}
         width={500}>
         <Container>
-          <Details>
-            <p>
-              <b>Código Interno: </b>
-              {category.id}
-            </p>
-            <p>
-              <b>Nome: </b>
-              {category.name}
-            </p>
-            <p>
-              <b>Descrição: </b>
-              {category.description}
-            </p>
-          </Details>
-          <Buttons>
-            <button onClick={changeModalUpdate}>
-              <FiEdit size={20} />
-              Editar
-            </button>
-            <button
-              className="error"
-              onClick={() => setModalDeleteCategory((state) => !state)}>
-              <FiTrash2 size={20} />
-              Excluir
-            </button>
-          </Buttons>
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              <Details>
+                <p>
+                  <b>Código Interno: </b>
+                  {category.id}
+                </p>
+                <p>
+                  <b>Nome: </b>
+                  {category.name}
+                </p>
+                <p>
+                  <b>Descrição: </b>
+                  {category.description}
+                </p>
+              </Details>
+              <Buttons>
+                <button onClick={changeModalUpdate}>
+                  <FiEdit size={20} />
+                  Editar
+                </button>
+                <button
+                  className="error"
+                  onClick={() => setModalDeleteCategory((state) => !state)}>
+                  <FiTrash2 size={20} />
+                  Excluir
+                </button>
+              </Buttons>
+            </>
+          )}
         </Container>
       </ModalComponent>
 

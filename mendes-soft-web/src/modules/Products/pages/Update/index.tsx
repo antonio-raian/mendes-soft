@@ -115,42 +115,43 @@ const ProductUpdate: React.FC = () => {
     [toast]
   );
 
-  if (loading)
-    return (
-      <SecondLayout topTitle="Atualização  Produto">
-        <Loading />
-      </SecondLayout>
-    );
-
   return (
     <SecondLayout topTitle="Atualização  Produto">
-      <Container>
-        <Form
-          initialData={{
-            item: {
-              ...product,
-              category_id: categories.find(
-                (cat) => cat.value === product.category?.id
-              ),
-            },
-          }}
-          ref={formRef}
-          onSubmit={handleSubmit}
-          style={{ width: "100%" }}>
-          <Scope path="item">
-            <Input name="id" label="Código Interno" disabled={true} />
-            <Input name="bar_code" label="Código de Barra" />
-            <Input name="name" label="Nome" />
-            <Input name="description" label="Descrição" />
-            <Input name="gain" label="Lucro (%)" type="number" min={0} />
-            <Select name="category_id" label="Categoria" options={categories} />
-          </Scope>
-          <button type="submit">
-            <FiCheck size={25} />
-            Concluir
-          </button>
-        </Form>
-      </Container>
+      {loading ? (
+        <Loading />
+      ) : (
+        <Container>
+          <Form
+            initialData={{
+              item: {
+                ...product,
+                category_id: categories.find(
+                  (cat) => cat.value === product.category?.id
+                ),
+              },
+            }}
+            ref={formRef}
+            onSubmit={handleSubmit}
+            style={{ width: "100%" }}>
+            <Scope path="item">
+              <Input name="id" label="Código Interno" disabled={true} />
+              <Input name="bar_code" label="Código de Barra" />
+              <Input name="name" label="Nome" />
+              <Input name="description" label="Descrição" />
+              <Input name="gain" label="Lucro (%)" type="number" min={0} />
+              <Select
+                name="category_id"
+                label="Categoria"
+                options={categories}
+              />
+            </Scope>
+            <button type="submit">
+              <FiCheck size={25} />
+              Concluir
+            </button>
+          </Form>
+        </Container>
+      )}
     </SecondLayout>
   );
 };

@@ -1,3 +1,5 @@
+import EmptyPage from "@/components/EmptyPage";
+import Loading from "@/components/Loading";
 import TableContainer from "@/components/TableContainer";
 import TopLists from "@/components/TopLists";
 import { useAuth } from "@/hooks/auth";
@@ -22,10 +24,11 @@ const ProductList: React.FC = () => {
   const history = useHistory();
   const { signOut } = useAuth();
 
-  const [products, setProducts] = useState<Item[]>();
+  const [products, setProducts] = useState<Item[]>([]);
 
   const [selectable, setSelectable] = useState("");
   const [modalDetails, setModalDetails] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [searchBy, setSearchBy] = useState("name");
   const [searchData, setSearchData] = useState("");
@@ -33,30 +36,31 @@ const ProductList: React.FC = () => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
 
-  useEffect(() => {
-    async function handleLoad() {
-      await api
-        .get(`/item?${searchBy}=%${searchData}%`)
-        .then((response) => {
-          setProducts(response.data);
-        })
-        .catch((e) => {
-          console.log(e.response);
-          if (e.response?.status === 401) {
-            signOut();
-            history.goBack();
-          }
-        });
-    }
-    handleLoad();
+  const searchFunction = useCallback(async () => {
+    setLoading(true);
+    await api
+      .get(`/item?${searchBy}=%${searchData}%`)
+      .then((response) => {
+        setProducts(response.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
   }, [searchData, searchBy]);
 
   useEffect(() => {
     async function handleLoad() {
+      setLoading(true);
       await api
         .get("/item")
         .then((response) => {
           setProducts(response.data);
+          setLoading(false);
         })
         .catch((e) => {
           console.log(e.response);
@@ -74,63 +78,77 @@ const ProductList: React.FC = () => {
   }, [setModalDetails]);
 
   return (
-    <SecondLayout topTitle="Produtos">
+    <>
       <ModalDetails
         isOpen={modalDetails}
         setIsOpen={changeModal}
         itemId={selectable}
       />
-
-      <Container>
-        <TopLists>
-          <button onClick={() => history.push("/produtos/cadastro")}>
-            Cadastrar Produto
-          </button>
-          <div>
-            <FiSearch size={20} />
-            <input
-              placeholder={`Buscar por ${
-                handle.find((h) => h.id === searchBy)?.name
-              }`}
-              name="search"
-              onChange={(e) => setSearchData(e.target.value)}
-            />
-          </div>
-        </TopLists>
-        <TableContainer>
-          <table>
-            <thead>
-              <tr>
-                {handle.map((h) => (
-                  <th
-                    id={h.id}
-                    onClick={() => changeSearchBy(h.id, setSearchBy, handle)}>
-                    {h.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {products?.map(
-                (item) =>
-                  item.category && (
-                    <tr
-                      onClick={() => {
-                        setSelectable(item.id);
-                        changeModal();
-                      }}>
-                      <td>{item.id}</td>
-                      <td>{item.name}</td>
-                      <td>{item.bar_code}</td>
-                      <td>{item.category.name} </td>
+      <SecondLayout topTitle="Produtos">
+        {loading ? (
+          <Loading />
+        ) : (
+          <Container>
+            <TopLists>
+              <button onClick={() => history.push("/produtos/cadastro")}>
+                Cadastrar Produto
+              </button>
+              <div>
+                <FiSearch size={20} />
+                <input
+                  placeholder={`Buscar por ${
+                    handle.find((h) => h.id === searchBy)?.name
+                  }`}
+                  name="search"
+                  onChange={(e) => {
+                    setSearchData(e.target.value);
+                    searchFunction();
+                  }}
+                />
+              </div>
+            </TopLists>
+            {products.length <= 0 ? (
+              <EmptyPage />
+            ) : (
+              <TableContainer>
+                <table>
+                  <thead>
+                    <tr>
+                      {handle.map((h) => (
+                        <th
+                          id={h.id}
+                          onClick={() =>
+                            changeSearchBy(h.id, setSearchBy, handle)
+                          }>
+                          {h.name}
+                        </th>
+                      ))}
                     </tr>
-                  )
-              )}
-            </tbody>
-          </table>
-        </TableContainer>
-      </Container>
-    </SecondLayout>
+                  </thead>
+                  <tbody>
+                    {products.map(
+                      (item) =>
+                        item.category && (
+                          <tr
+                            onClick={() => {
+                              setSelectable(item.id);
+                              changeModal();
+                            }}>
+                            <td>{item.id}</td>
+                            <td>{item.name}</td>
+                            <td>{item.bar_code}</td>
+                            <td>{item.category.name} </td>
+                          </tr>
+                        )
+                    )}
+                  </tbody>
+                </table>
+              </TableContainer>
+            )}
+          </Container>
+        )}
+      </SecondLayout>
+    </>
   );
 };
 

@@ -38,7 +38,7 @@ services:
     image: node:latest
     working_dir: /home/web
     restart: always
-    enviroment:
+    environment:
       NODE_ENV: "development"
       TZ: "America/Bahia"
     ports:

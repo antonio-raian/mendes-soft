@@ -100,7 +100,7 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
         width={500}
         closeOnOverlay={true}>
         <Container>
-          <h3>Deseja remover o produto {"nome produto"}?</h3>
+          <h3>Deseja remover o produto {product.name}?</h3>
           <Buttons>
             <button onClick={handleDelete}>
               <FiCheck size={20} />

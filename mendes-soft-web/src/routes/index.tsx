@@ -21,6 +21,8 @@ import NonPage from "@/pages/NonPage";
 import { useAuth } from "@/hooks/auth";
 import Login from "@/pages/Login";
 import PurchaseDetails from "@/modules/Purchases/pages/Details";
+import Storage from "@/pages/Storage";
+import StorageList from "@/modules/Storage/pages/List";
 
 const Routes = () => {
   return (
@@ -74,6 +76,21 @@ const Routes = () => {
         component={PurchaseDetails}
       />
       <Route isPrivate exact path="/compras/relatorios" component={NonPage} />
+      <Route isPrivate exact path="/estoques" component={Storage} />
+      <Route isPrivate exact path="/estoques/lista" component={StorageList} />
+      <Route
+        isPrivate
+        exact
+        path="/estoques/cadastro"
+        component={PurchaseCreate}
+      />
+      <Route
+        isPrivate
+        exact
+        path="/estoques/detalhes"
+        component={PurchaseDetails}
+      />
+      <Route isPrivate exact path="/estoques/relatorios" component={NonPage} />
       <Route isPrivate exact path="/funcionarios" component={Employees} />
       <Route isPrivate exact path="/funcionarios/lista" component={NonPage} />
       <Route

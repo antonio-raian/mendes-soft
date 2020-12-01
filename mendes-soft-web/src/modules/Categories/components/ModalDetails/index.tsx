@@ -93,7 +93,7 @@ const ModalDetailsCategory: React.FC<ModalProps> = ({
         width={500}
         closeOnOverlay={true}>
         <Container>
-          <h3>Deseja remover a categoria {"nome produto"}?</h3>
+          <h3>Deseja remover a categoria {category.name}?</h3>
           <Buttons>
             <button onClick={handleDelete}>
               <FiCheck size={20} />

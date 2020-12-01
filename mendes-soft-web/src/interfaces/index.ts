@@ -45,6 +45,14 @@ export interface Item {
   category: Category;
 }
 
+export interface Storage {
+  id: string;
+  quantity: number;
+  value_sale: number;
+  active: boolean;
+  item: Item;
+}
+
 export interface Purchase {
   id: string;
   items: string;

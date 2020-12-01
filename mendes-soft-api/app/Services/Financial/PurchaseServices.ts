@@ -16,7 +16,8 @@ export default class PurchaseServices {
       .where(search)
       .preload("employee", (q) => {
         q.preload("person");
-      });
+      })
+      .orderBy("expected_payment_date", "desc");
   }
 
   public async update(newPurchase) {

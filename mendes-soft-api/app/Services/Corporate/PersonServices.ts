@@ -14,7 +14,8 @@ export default class PersonServices {
     return await Person.query()
       .where(search)
       .preload("addresses")
-      .preload("contacts");
+      .preload("contacts")
+      .orderBy("name", "asc");
   }
 
   public async update(newPerson) {

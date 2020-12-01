@@ -16,7 +16,8 @@ export default class UserServices {
         q.preload("person", (q) => {
           q.preload("addresses").preload("contacts");
         });
-      });
+      })
+      .orderBy("id", "desc");
   }
 
   public async update(newUser) {

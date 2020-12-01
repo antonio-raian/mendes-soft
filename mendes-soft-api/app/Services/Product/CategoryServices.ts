@@ -6,7 +6,10 @@ export default class CategoryServices {
   }
 
   public async read(search: object) {
-    return await Category.query().where(search).preload("items");
+    return await Category.query()
+      .where(search)
+      .preload("items")
+      .orderBy("id", "asc");
   }
 
   public async update(newCategory) {

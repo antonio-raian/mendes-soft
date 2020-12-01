@@ -8,7 +8,7 @@ export default class ContactServices {
   }
 
   public async read(search: object) {
-    return await Contact.query().where(search);
+    return await Contact.query().where(search).orderBy("createAt", "asc");
   }
 
   public async update(newContact) {

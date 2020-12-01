@@ -4,18 +4,19 @@ export default class People extends BaseSchema {
   protected tableName = "people";
 
   public async up() {
-    this.schema.createTable(this.tableName, (table) => {
-      table.bigIncrements("id");
+    if (!(await this.schema.hasTable(this.tableName)))
+      this.schema.createTable(this.tableName, (table) => {
+        table.bigIncrements("id");
 
-      table.string("name").notNullable();
-      table.string("document").notNullable().unique();
-      table.boolean("active").defaultTo(true);
+        table.string("name").notNullable();
+        table.string("document").notNullable().unique();
+        table.boolean("active").defaultTo(true);
 
-      table.timestamps(true);
-    });
+        table.timestamps(true);
+      });
   }
 
   public async down() {
-    this.schema.dropTable(this.tableName);
+    // this.schema.dropTable(this.tableName);
   }
 }

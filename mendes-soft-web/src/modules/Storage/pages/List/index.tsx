@@ -36,26 +36,23 @@ const StorageList: React.FC = () => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
 
-  const searchFunction = useCallback(() => {
+  const searchFunction = useCallback(async () => {
     setLoading(true);
-    async function handleLoad() {
-      await api
-        .get<Item[]>(`/item?${searchBy}=%${searchData}%`)
-        .then((response) => {
-          setStorage(
-            response.data.map((item) => ({ ...item.storage, item: item }))
-          );
-          setLoading(false);
-        })
-        .catch((e) => {
-          console.log(e.response);
-          if (e.response?.status === 401) {
-            signOut();
-            history.goBack();
-          }
-        });
-    }
-    handleLoad();
+    await api
+      .get<Item[]>(`/item?${searchBy}=%${searchData}%`)
+      .then((response) => {
+        setStorage(
+          response.data.map((item) => ({ ...item.storage, item: item }))
+        );
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
   }, [searchData, searchBy]);
 
   useEffect(() => {
@@ -91,43 +88,43 @@ const StorageList: React.FC = () => {
       />
 
       <SecondLayout topTitle="Estoque">
-        {loading ? (
-          <Loading />
-        ) : (
-          <Container>
-            <TopLists containerStyle={{ justifyContent: "flex-end" }}>
-              <div>
-                <FiSearch size={20} />
-                <input
-                  placeholder={`Buscar por ${
-                    handle.find((h) => h.id === searchBy)?.name
-                  }`}
-                  name="search"
-                  onChange={(e) => {
-                    setSearchData(e.target.value);
-                    searchFunction();
-                  }}
-                />
-              </div>
-            </TopLists>
-            {storages.length <= 0 ? (
-              <EmptyPage />
-            ) : (
-              <TableContainer>
-                <table>
-                  <thead>
-                    <tr>
-                      {handle.map((h) => (
-                        <th
-                          id={h.id}
-                          onClick={() =>
-                            changeSearchBy(h.id, setSearchBy, handle)
-                          }>
-                          {h.name}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
+        <Container>
+          <TopLists containerStyle={{ justifyContent: "flex-end" }}>
+            <div>
+              <FiSearch size={20} />
+              <input
+                placeholder={`Buscar por ${
+                  handle.find((h) => h.id === searchBy)?.name
+                }`}
+                name="search"
+                onChange={(e) => {
+                  setSearchData(e.target.value);
+                  searchFunction();
+                }}
+              />
+            </div>
+          </TopLists>
+          {storages.length <= 0 ? (
+            <EmptyPage />
+          ) : (
+            <TableContainer>
+              <table>
+                <thead>
+                  <tr>
+                    {handle.map((h) => (
+                      <th
+                        id={h.id}
+                        onClick={() =>
+                          changeSearchBy(h.id, setSearchBy, handle)
+                        }>
+                        {h.name}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                {loading ? (
+                  <Loading />
+                ) : (
                   <tbody>
                     {storages.map((stock) => (
                       <tr
@@ -142,11 +139,11 @@ const StorageList: React.FC = () => {
                       </tr>
                     ))}
                   </tbody>
-                </table>
-              </TableContainer>
-            )}
-          </Container>
-        )}
+                )}
+              </table>
+            </TableContainer>
+          )}
+        </Container>
       </SecondLayout>
     </>
   );

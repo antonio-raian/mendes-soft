@@ -33,5 +33,18 @@ services:
     depends_on:
       - db
 
+  frontend:
+    container_name: mendes-soft_web
+    image: node:latest
+    working_dir: /home/web
+    restart: always
+    enviroment:
+    ports:
+      - 80:3000
+    volumes:
+      - ./mendes-soft-web:/home/web
+    command: "yarn start"
+    tty: true
+
 networks:
   net_db:

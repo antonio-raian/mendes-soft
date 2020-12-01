@@ -85,46 +85,46 @@ const ProductList: React.FC = () => {
         itemId={selectable}
       />
       <SecondLayout topTitle="Produtos">
-        {loading ? (
-          <Loading />
-        ) : (
-          <Container>
-            <TopLists>
-              <button onClick={() => history.push("/produtos/cadastro")}>
-                Cadastrar Produto
-              </button>
-              <div>
-                <FiSearch size={20} />
-                <input
-                  placeholder={`Buscar por ${
-                    handle.find((h) => h.id === searchBy)?.name
-                  }`}
-                  name="search"
-                  onChange={(e) => {
-                    setSearchData(e.target.value);
-                    searchFunction();
-                  }}
-                />
-              </div>
-            </TopLists>
-            {products.length <= 0 ? (
-              <EmptyPage />
-            ) : (
-              <TableContainer>
-                <table>
-                  <thead>
-                    <tr>
-                      {handle.map((h) => (
-                        <th
-                          id={h.id}
-                          onClick={() =>
-                            changeSearchBy(h.id, setSearchBy, handle)
-                          }>
-                          {h.name}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
+        <Container>
+          <TopLists>
+            <button onClick={() => history.push("/produtos/cadastro")}>
+              Cadastrar Produto
+            </button>
+            <div>
+              <FiSearch size={20} />
+              <input
+                placeholder={`Buscar por ${
+                  handle.find((h) => h.id === searchBy)?.name
+                }`}
+                name="search"
+                onChange={(e) => {
+                  setSearchData(e.target.value);
+                  searchFunction();
+                }}
+              />
+            </div>
+          </TopLists>
+          {products.length <= 0 ? (
+            <EmptyPage />
+          ) : (
+            <TableContainer>
+              <table>
+                <thead>
+                  <tr>
+                    {handle.map((h) => (
+                      <th
+                        id={h.id}
+                        onClick={() =>
+                          changeSearchBy(h.id, setSearchBy, handle)
+                        }>
+                        {h.name}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                {loading ? (
+                  <Loading />
+                ) : (
                   <tbody>
                     {products.map(
                       (item) =>
@@ -142,11 +142,11 @@ const ProductList: React.FC = () => {
                         )
                     )}
                   </tbody>
-                </table>
-              </TableContainer>
-            )}
-          </Container>
-        )}
+                )}
+              </table>
+            </TableContainer>
+          )}
+        </Container>
       </SecondLayout>
     </>
   );

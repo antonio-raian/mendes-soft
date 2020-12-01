@@ -26,6 +26,7 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
   const [update, setUpdate] = useState(false);
 
   const [valueSale, setValueSale] = useState(0);
+  const [valueCost, setValueCost] = useState(0);
   const [quantity, setQuantity] = useState(0);
 
   const [storage, setStorage] = useState({} as Storage);
@@ -36,6 +37,7 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
 
       setQuantity(response.data[0].quantity);
       setValueSale(response.data[0].value_sale);
+      setValueCost(response.data[0].value_cost);
 
       setLoading(false);
     });
@@ -48,7 +50,12 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
     try {
       console.log(valueSale, quantity);
       await api.put("/storage", {
-        storage: { id: storage.id, value_sale: valueSale, quantity },
+        storage: {
+          id: storage.id,
+          value_sale: valueSale,
+          value_cost: valueCost,
+          quantity,
+        },
       });
       toast.addToast({
         title: "Sucesso",
@@ -66,7 +73,7 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
         )}`,
       });
     }
-  }, [setIsOpen, storage, valueSale, quantity]);
+  }, [setIsOpen, storage, valueSale, valueCost, quantity]);
 
   return (
     <>
@@ -115,6 +122,19 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
                       value={valueSale}
                       type="number"
                       onChange={(e) => setValueSale(Number(e.target.value))}
+                    />
+                  )}
+                </p>
+                <p>
+                  <b>Preço de Compra: </b>
+                  R${" "}
+                  {!update ? (
+                    valueCost.toFixed(2)
+                  ) : (
+                    <input
+                      value={valueCost}
+                      type="number"
+                      onChange={(e) => setValueCost(Number(e.target.value))}
                     />
                   )}
                 </p>

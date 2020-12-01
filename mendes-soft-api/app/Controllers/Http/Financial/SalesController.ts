@@ -2,7 +2,7 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import SaleServices from "App/Services/Financial/SaleServices";
 import ItemServices from "App/Services/Product/ItemServices";
 import StorageServices from "App/Services/Stock/StorageServices";
-import { fromStorage, toStorage } from "./utils";
+import { fromStorage, toStorage } from "../../../Services/Financial/utils";
 
 export default class SalesController {
   public async create({ request, auth }: HttpContextContract) {

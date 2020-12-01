@@ -27,10 +27,29 @@ const ProductList: React.FC = () => {
   const [selectable, setSelectable] = useState("");
   const [modalDetails, setModalDetails] = useState(false);
 
-  const [searchBy, setSearchBy] = useState("id");
+  const [searchBy, setSearchBy] = useState("name");
+  const [searchData, setSearchData] = useState("");
   useEffect(() => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
+
+  useEffect(() => {
+    async function handleLoad() {
+      await api
+        .get(`/item?${searchBy}=%${searchData}%`)
+        .then((response) => {
+          setProducts(response.data);
+        })
+        .catch((e) => {
+          console.log(e.response);
+          if (e.response?.status === 401) {
+            signOut();
+            history.goBack();
+          }
+        });
+    }
+    handleLoad();
+  }, [searchData, searchBy]);
 
   useEffect(() => {
     async function handleLoad() {
@@ -74,6 +93,7 @@ const ProductList: React.FC = () => {
                 handle.find((h) => h.id === searchBy)?.name
               }`}
               name="search"
+              onChange={(e) => setSearchData(e.target.value)}
             />
           </div>
         </TopLists>
@@ -91,18 +111,21 @@ const ProductList: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {products?.map((item) => (
-                <tr
-                  onClick={() => {
-                    setSelectable(item.id);
-                    changeModal();
-                  }}>
-                  <td>{item.id}</td>
-                  <td>{item.name}</td>
-                  <td>{item.bar_code}</td>
-                  <td>{item.category.name} </td>
-                </tr>
-              ))}
+              {products?.map(
+                (item) =>
+                  item.category && (
+                    <tr
+                      onClick={() => {
+                        setSelectable(item.id);
+                        changeModal();
+                      }}>
+                      <td>{item.id}</td>
+                      <td>{item.name}</td>
+                      <td>{item.bar_code}</td>
+                      <td>{item.category.name} </td>
+                    </tr>
+                  )
+              )}
             </tbody>
           </table>
         </TableContainer>

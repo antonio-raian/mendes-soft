@@ -1,7 +1,7 @@
 import TableContainer from "@/components/TableContainer";
 import TopLists from "@/components/TopLists";
 import { useAuth } from "@/hooks/auth";
-import { Storage } from "@/interfaces";
+import { Item, Storage } from "@/interfaces";
 import SecondLayout from "@/layouts/SecondLayout";
 import api from "@/services/api";
 import changeSearchBy from "@/utils/changeSearch";
@@ -28,9 +28,30 @@ const StorageList: React.FC = () => {
   const [modalDetails, setModalDetails] = useState(false);
 
   const [searchBy, setSearchBy] = useState("bar_code");
+  const [searchData, setSearchData] = useState("");
   useEffect(() => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
+
+  useEffect(() => {
+    async function handleLoad() {
+      await api
+        .get<Item[]>(`/item?${searchBy}=%${searchData}%`)
+        .then((response) => {
+          setStorage(
+            response.data.map((item) => ({ ...item.storage, item: item }))
+          );
+        })
+        .catch((e) => {
+          console.log(e.response);
+          if (e.response?.status === 401) {
+            signOut();
+            history.goBack();
+          }
+        });
+    }
+    handleLoad();
+  }, [searchData, searchBy]);
 
   useEffect(() => {
     async function handleLoad() {
@@ -71,6 +92,7 @@ const StorageList: React.FC = () => {
                 handle.find((h) => h.id === searchBy)?.name
               }`}
               name="search"
+              onChange={(e) => setSearchData(e.target.value)}
             />
           </div>
         </TopLists>

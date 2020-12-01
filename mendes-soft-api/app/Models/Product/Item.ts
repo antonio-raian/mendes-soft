@@ -40,6 +40,6 @@ export default class Item extends BaseModel {
   @belongsTo(() => Category, { foreignKey: "category_id" })
   public category: BelongsTo<typeof Category>;
 
-  @hasOne(() => Storage, { foreignKey: "item_id" })
+  @hasOne(() => Storage, { foreignKey: "id" })
   public storage: HasOne<typeof Storage>;
 }

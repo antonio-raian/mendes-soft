@@ -39,6 +39,8 @@ services:
     working_dir: /home/web
     restart: always
     enviroment:
+      NODE_ENV: "development"
+      TZ: "America/Bahia"
     ports:
       - 80:3000
     volumes:

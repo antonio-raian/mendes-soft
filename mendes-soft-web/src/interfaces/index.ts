@@ -50,6 +50,7 @@ export interface Storage {
   id: string;
   quantity: number;
   value_sale: number;
+  value_cost: number;
   active: boolean;
   item: Item;
 }

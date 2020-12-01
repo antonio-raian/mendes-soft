@@ -103,7 +103,12 @@ const PurchaseList: React.FC = () => {
                         toDetailsPage(purc.id);
                       }}>
                       <td>{purc.id}</td>
-                      <td>{format(parseISO(purc.created_at), "dd/MM/yyyy")}</td>
+                      <td>
+                        {format(
+                          parseISO(purc.expected_payment_date),
+                          "dd/MM/yyyy"
+                        )}
+                      </td>
                       <td>{purc.employee.person.name}</td>
                       <td>{purc.value} </td>
                       <td>

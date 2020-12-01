@@ -43,6 +43,7 @@ export interface Item {
   gain: number;
   active: boolean;
   category: Category;
+  storage: Storage;
 }
 
 export interface Storage {

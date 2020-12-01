@@ -2,10 +2,11 @@ import Person from "App/Models/Corporate/Person";
 import Client from "App/Models/Corporate/Client";
 
 export default class ClientServices {
-  public async create(newClient: object, personId: number) {
+  public async create(newClient: Client, personId: number) {
     const people = await Person.findOrFail(personId);
     const client = new Client();
     client.merge(newClient);
+    client.limit = Number(newClient.limit);
     await client.related("person").associate(people);
     return client;
   }

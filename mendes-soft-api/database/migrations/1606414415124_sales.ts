@@ -7,7 +7,7 @@ export default class Sales extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.bigIncrements("id");
 
-      table.bigInteger("user_id").references("users.id");
+      table.bigInteger("employee_id").references("employes.id");
       table.bigInteger("client_id").references("clients.id");
       table.string("items").notNullable(); // array de objetos contendo dados do produto + quantidade + valores
       table.float("gross_value");

@@ -6,6 +6,7 @@ import { fromStorage, toStorage } from "./utils";
 export default class PurchasesController {
   public async create({ request, auth }: HttpContextContract) {
     const { purchase } = request.all();
+    console.log("DAta purch", purchase);
     let value = 0;
     const user = await auth.authenticate();
 
@@ -15,15 +16,20 @@ export default class PurchasesController {
         item["name"] = i.name;
         item["internal_code"] = i.internal_code;
         item["bar_code"] = i.bar_code;
-        value += item.quantity * item.unit_value;
+        value += Number(item.quantity) * Number(item.unit_value);
 
-        await toStorage(i.id, item.quantity, i.gain, item.unit_value);
+        await toStorage(
+          i.id,
+          Number(item.quantity),
+          i.gain,
+          Number(item.unit_value)
+        );
       })
     );
 
     return await new PurchaseServices().create(
       { ...purchase, items: JSON.stringify(purchase.items), value },
-      user.id
+      user.employee_id
     );
   }
 

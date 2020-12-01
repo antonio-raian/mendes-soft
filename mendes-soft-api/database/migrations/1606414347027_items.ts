@@ -8,7 +8,6 @@ export default class Items extends BaseSchema {
       table.bigIncrements("id");
 
       table.bigInteger("category_id").references("categories.id");
-      table.string("internal_code").notNullable();
       table.string("bar_code").notNullable();
       table.string("name").notNullable();
       table.string("description").notNullable();

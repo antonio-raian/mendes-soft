@@ -1,18 +1,22 @@
+import Employe from "App/Models/Corporate/Employe";
 import Purchase from "App/Models/Financial/Purchase";
-import User from "App/Models/User";
 
 export default class PurchaseServices {
-  public async create(newPurchase: object, userId: number) {
-    const user = await User.findOrFail(userId);
+  public async create(newPurchase: object, employeeId: number) {
+    const employee = await Employe.findOrFail(employeeId);
     const purchase = new Purchase();
     purchase.merge(newPurchase);
 
-    await purchase.related("user").associate(user);
+    await purchase.related("employee").associate(employee);
     return purchase;
   }
 
   public async read(search: object) {
-    return await Purchase.query().where(search).preload("user");
+    return await Purchase.query()
+      .where(search)
+      .preload("employee", (q) => {
+        q.preload("person");
+      });
   }
 
   public async update(newPurchase) {

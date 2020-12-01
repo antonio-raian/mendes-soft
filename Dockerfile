@@ -5,7 +5,7 @@ ENV TZ=America/Bahia
 
 WORKDIR /home/backend
 
-COPY ./mendes-soft .
+COPY ./mendes-soft-api .
 
 RUN yarn install && npm i -g @adonisjs/core
 RUN yarn add @adonisjs/lucid@alpha && node ace invoke @adonisjs/lucid

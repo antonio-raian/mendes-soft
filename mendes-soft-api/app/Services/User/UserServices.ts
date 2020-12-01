@@ -1,19 +1,21 @@
 import User from "App/Models/User";
-import Person from "App/Models/Corporate/Person";
+import Employe from "App/Models/Corporate/Employe";
 
 export default class UserServices {
-  public async create(newUser: object, personId: number) {
-    const people = await Person.findOrFail(personId);
+  public async create(newUser: object, employeeId: number) {
+    const employee = await Employe.findOrFail(employeeId);
     const user = await User.create(newUser);
-    await user.related("person").associate(people);
+    await user.related("employee").associate(employee);
     return user;
   }
 
   public async read(search: object) {
     return await User.query()
       .where(search)
-      .preload("person", (q) => {
-        q.preload("addresses").preload("contacts");
+      .preload("employee", (q) => {
+        q.preload("person", (q) => {
+          q.preload("addresses").preload("contacts");
+        });
       });
   }
 

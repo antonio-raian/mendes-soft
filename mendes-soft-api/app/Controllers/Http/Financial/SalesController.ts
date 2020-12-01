@@ -35,7 +35,7 @@ export default class SalesController {
         gross_value: value,
         net_value: value - value * sale.discount,
       },
-      user.id,
+      user.employee_id,
       client
     );
   }

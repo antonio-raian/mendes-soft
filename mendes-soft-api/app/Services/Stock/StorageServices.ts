@@ -3,7 +3,6 @@ import Storage from "App/Models/Stock/Storage";
 
 export default class StorageServices {
   public async create(newStorage: object, itemId: number) {
-    console.log(newStorage, itemId);
     const item = await Item.findOrFail(itemId);
     const storage = new Storage();
     storage.merge(newStorage);
@@ -20,7 +19,6 @@ export default class StorageServices {
   }
 
   public async update(newStorage) {
-    console.log(newStorage);
     const storage = await Storage.findOrFail(newStorage.id);
 
     await storage.merge(newStorage);

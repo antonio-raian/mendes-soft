@@ -7,7 +7,7 @@ export default class UsersSchema extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments("id").primary();
 
-      table.bigInteger("person_id").references("people.id");
+      table.bigInteger("employee_id").references("employes.id");
 
       table.string("username", 255).notNullable();
       table.string("password", 180).notNullable();

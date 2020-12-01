@@ -3,6 +3,7 @@ import Address from "App/Models/Corporate/Address";
 import Contact from "App/Models/Corporate/Contact";
 import Person from "App/Models/Corporate/Person";
 import User from "App/Models/User";
+import Employe from "../../app/Models/Corporate/Employe";
 
 export default class UserSeeder extends BaseSeeder {
   public async run() {
@@ -25,8 +26,14 @@ export default class UserSeeder extends BaseSeeder {
     person.related("addresses").sync([address.id]);
     person.related("contacts").sync([contact.id]);
 
-    await User.create({
+    const employee = await Employe.create({
       person_id: person.id,
+      salary: 1500,
+      comission: 50,
+    });
+
+    await User.create({
+      employee_id: employee.id,
       username: "develope",
       password: "123456",
     });

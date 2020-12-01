@@ -1,13 +1,13 @@
 import { DateTime } from "luxon";
 import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
-import User from "../User";
 import Client from "../Corporate/Client";
+import Employe from "../Corporate/Employe";
 
 export default class Sale extends BaseModel {
   @column({ isPrimary: true })
   public id: number;
 
-  @column({ serializeAs: null }) public "user_id": number;
+  @column({ serializeAs: null }) public "employee_id": number;
   @column({ serializeAs: null }) public "client_id": number;
   @column() public "items": string; // array de objetos contendo dados do produto + quantidade + valores
   @column() public "gross_value": number;
@@ -28,8 +28,8 @@ export default class Sale extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
 
-  @belongsTo(() => User, { foreignKey: "user_id" })
-  public user: BelongsTo<typeof User>;
+  @belongsTo(() => Employe, { foreignKey: "employee_id" })
+  public employee: BelongsTo<typeof Employe>;
 
   @belongsTo(() => Client, { foreignKey: "client_id" })
   public client: BelongsTo<typeof Client>;

@@ -7,7 +7,7 @@ export default class Purchases extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.bigIncrements("id");
 
-      table.bigInteger("user_id").references("users.id").notNullable();
+      table.bigInteger("employee_id").references("employes.id");
       table.string("items").notNullable(); // array de objetos contendo dados do produto + quantidade + valores
       table.float("value");
       table.enu("type_payment", ["money", "card"]);

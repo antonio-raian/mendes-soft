@@ -7,7 +7,7 @@ import {
   belongsTo,
   BelongsTo,
 } from "@ioc:Adonis/Lucid/Orm";
-import Person from "../Corporate/Person";
+import Employe from "../Corporate/Employe";
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -20,7 +20,7 @@ export default class User extends BaseModel {
   public password: string;
 
   @column({ serializeAs: null })
-  public person_id: number;
+  public employee_id: number;
 
   @column()
   public rememberMeToken?: string;
@@ -42,6 +42,6 @@ export default class User extends BaseModel {
   }
 
   //Relations
-  @belongsTo(() => Person, { foreignKey: "person_id" })
-  public person: BelongsTo<typeof Person>;
+  @belongsTo(() => Employe, { foreignKey: "employee_id" })
+  public employee: BelongsTo<typeof Employe>;
 }

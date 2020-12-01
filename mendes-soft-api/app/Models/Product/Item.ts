@@ -1,6 +1,14 @@
 import { DateTime } from "luxon";
-import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
+import {
+  BaseModel,
+  BelongsTo,
+  belongsTo,
+  column,
+  HasOne,
+  hasOne,
+} from "@ioc:Adonis/Lucid/Orm";
 import Category from "./Category";
+import Storage from "../Stock/Storage";
 
 export default class Item extends BaseModel {
   @column({ isPrimary: true })
@@ -31,4 +39,7 @@ export default class Item extends BaseModel {
   // Relations
   @belongsTo(() => Category, { foreignKey: "category_id" })
   public category: BelongsTo<typeof Category>;
+
+  @hasOne(() => Storage, { foreignKey: "item_id" })
+  public storage: HasOne<typeof Storage>;
 }

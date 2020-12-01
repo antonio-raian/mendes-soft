@@ -2,17 +2,34 @@ import Category from "App/Models/Product/Category";
 import Item from "App/Models/Product/Item";
 
 export default class ItemServices {
-  public async create(newItem: object, categoryId: number) {
+  public async create(newItem: Item, categoryId: number) {
     const category = await Category.findOrFail(categoryId);
     const item = new Item();
     await item.merge(newItem);
+    item.gain = Number(newItem.gain);
 
     await item.related("category").associate(category);
     return item;
   }
 
   public async read(search: object) {
-    return await Item.query().where(search).preload("category");
+    const key = Object.keys(search)[0];
+    if (key === "bar_code" || key === "name" || key === "description")
+      return await Item.query()
+        .whereRaw(`LOWER(${key}) like  LOWER('${search[key]}')`)
+        .preload("category")
+        .preload("storage")
+        .orderBy("id", "asc");
+    if (key === "category")
+      return await Item.query()
+        .preload("category", (q) => {
+          q.whereRaw(`LOWER(name) like  LOWER('${search[key]}')`);
+        })
+        .orderBy("id", "asc");
+    return await Item.query()
+      .where(search)
+      .preload("category")
+      .orderBy("id", "asc");
   }
 
   public async update(newItem) {

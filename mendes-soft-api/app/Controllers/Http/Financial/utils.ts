@@ -15,14 +15,14 @@ export const toStorage = async (
       quantity: storage[0].quantity + quantity,
       value_sale:
         gain && unit_value
-          ? unit_value + unit_value * gain
+          ? unit_value + unit_value * (gain / 100)
           : storage[0].value_sale,
     });
   } else {
     await new StorageServices().create(
       {
         quantity,
-        value_sale: gain && unit_value + unit_value * gain,
+        value_sale: gain && unit_value + unit_value * (gain / 100),
       },
       itemId
     );

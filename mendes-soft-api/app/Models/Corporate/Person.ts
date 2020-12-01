@@ -10,6 +10,7 @@ import {
 import Address from "./Address";
 import Contact from "./Contact";
 import User from "../User";
+import Employe from "./Employe";
 
 export default class Person extends BaseModel {
   @column({ isPrimary: true })
@@ -41,6 +42,6 @@ export default class Person extends BaseModel {
   })
   public contacts: ManyToMany<typeof Contact>;
 
-  @hasOne(() => User, { foreignKey: "person_id" })
-  public user: HasOne<typeof User>;
+  @hasOne(() => Employe, { foreignKey: "person_id" })
+  public employee: HasOne<typeof Employe>;
 }

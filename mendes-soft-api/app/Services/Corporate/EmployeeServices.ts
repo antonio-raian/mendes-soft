@@ -14,7 +14,7 @@ export default class EmployeeServices {
     return await Employe.query()
       .where(search)
       .preload("person", (q) => {
-        q.preload("addresses").preload("contacts").preload("user");
+        q.preload("addresses").preload("contacts");
       });
   }
 

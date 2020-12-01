@@ -36,27 +36,27 @@ const StorageList: React.FC = () => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
 
-  const searchFunction = useCallback(async () => {
-    setLoading(true);
-    await api
-      .get<Item[]>(`/item?${searchBy}=%${searchData}%`)
-      .then((response) => {
-        setStorage(
-          response.data.map((item) => ({ ...item.storage, item: item }))
-        );
-        setLoading(false);
-      })
-      .catch((e) => {
-        console.log(e.response);
-        if (e.response?.status === 401) {
-          signOut();
-          history.goBack();
-        }
-      });
-  }, [searchData, searchBy]);
-
   useEffect(() => {
     setLoading(true);
+    async function handleLoadItem() {
+      await api
+        .get<Item[]>(`/item?${searchBy}=%${searchData}%`)
+        .then((response) => {
+          setStorage(
+            response.data
+              .filter((i) => i.storage)
+              .map((item) => item.storage && { ...item.storage, item: item })
+          );
+          setLoading(false);
+        })
+        .catch((e) => {
+          console.log(e);
+          if (e.response?.status === 401) {
+            signOut();
+            history.goBack();
+          }
+        });
+    }
     async function handleLoad() {
       await api
         .get("/storage")
@@ -72,8 +72,8 @@ const StorageList: React.FC = () => {
           }
         });
     }
-    handleLoad();
-  }, [modalDetails]);
+    searchData ? handleLoadItem() : handleLoad();
+  }, [modalDetails, searchBy, searchData]);
 
   const changeModal = useCallback(() => {
     setModalDetails((states) => !states);
@@ -99,50 +99,51 @@ const StorageList: React.FC = () => {
                 name="search"
                 onChange={(e) => {
                   setSearchData(e.target.value);
-                  searchFunction();
                 }}
               />
             </div>
           </TopLists>
-          {storages.length <= 0 ? (
-            <EmptyPage />
-          ) : (
-            <TableContainer>
-              <table>
-                <thead>
-                  <tr>
-                    {handle.map((h) => (
-                      <th
-                        id={h.id}
-                        onClick={() =>
-                          changeSearchBy(h.id, setSearchBy, handle)
-                        }>
-                        {h.name}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                {loading ? (
-                  <Loading />
-                ) : (
-                  <tbody>
-                    {storages.map((stock) => (
-                      <tr
-                        onClick={() => {
-                          setSelectable(stock?.id);
-                          changeModal();
-                        }}>
-                        <td>{stock?.item.bar_code}</td>
-                        <td>{stock?.item.name}</td>
-                        <td>R$ {stock?.value_sale.toFixed(2)}</td>
-                        <td>{stock?.quantity} </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                )}
-              </table>
-            </TableContainer>
-          )}
+
+          <TableContainer>
+            <table>
+              <thead>
+                <tr>
+                  {handle.map((h) => (
+                    <th
+                      id={h.id}
+                      onClick={() => changeSearchBy(h.id, setSearchBy, handle)}>
+                      {h.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              {loading ? (
+                <Loading />
+              ) : storages.length <= 0 ? (
+                <tbody>
+                  <td></td>
+                  <td>
+                    <EmptyPage />
+                  </td>
+                </tbody>
+              ) : (
+                <tbody>
+                  {storages.map((stock) => (
+                    <tr
+                      onClick={() => {
+                        setSelectable(stock?.id);
+                        changeModal();
+                      }}>
+                      <td>{stock?.item.bar_code}</td>
+                      <td>{stock?.item.name}</td>
+                      <td>R$ {stock?.value_sale.toFixed(2)}</td>
+                      <td>{stock?.quantity} </td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
+            </table>
+          </TableContainer>
         </Container>
       </SecondLayout>
     </>

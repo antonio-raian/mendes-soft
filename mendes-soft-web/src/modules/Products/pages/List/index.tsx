@@ -36,26 +36,9 @@ const ProductList: React.FC = () => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
 
-  const searchFunction = useCallback(async () => {
-    setLoading(true);
-    await api
-      .get(`/item?${searchBy}=%${searchData}%`)
-      .then((response) => {
-        setProducts(response.data);
-        setLoading(false);
-      })
-      .catch((e) => {
-        console.log(e.response);
-        if (e.response?.status === 401) {
-          signOut();
-          history.goBack();
-        }
-      });
-  }, [searchData, searchBy]);
-
   useEffect(() => {
+    setLoading(true);
     async function handleLoad() {
-      setLoading(true);
       await api
         .get("/item")
         .then((response) => {
@@ -70,8 +53,28 @@ const ProductList: React.FC = () => {
           }
         });
     }
-    handleLoad();
-  }, [modalDetails]);
+    async function handleLoadSearch() {
+      await api
+        .get<Item[]>(
+          `/item?${searchBy}=${
+            searchBy === "id" ? searchData : `%${searchData}%`
+          }`
+        )
+        .then((response) => {
+          setProducts(response.data.filter((i) => i.category));
+
+          setLoading(false);
+        })
+        .catch((e) => {
+          console.log(e.response);
+          if (e.response?.status === 401) {
+            signOut();
+            history.goBack();
+          }
+        });
+    }
+    searchData ? handleLoadSearch() : handleLoad();
+  }, [modalDetails, searchBy, searchData]);
 
   const changeModal = useCallback(() => {
     setModalDetails((states) => !states);
@@ -97,55 +100,56 @@ const ProductList: React.FC = () => {
                   handle.find((h) => h.id === searchBy)?.name
                 }`}
                 name="search"
+                value={searchData}
                 onChange={(e) => {
                   setSearchData(e.target.value);
-                  searchFunction();
                 }}
               />
             </div>
           </TopLists>
-          {products.length <= 0 ? (
-            <EmptyPage />
-          ) : (
-            <TableContainer>
-              <table>
-                <thead>
-                  <tr>
-                    {handle.map((h) => (
-                      <th
-                        id={h.id}
-                        onClick={() =>
-                          changeSearchBy(h.id, setSearchBy, handle)
-                        }>
-                        {h.name}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                {loading ? (
-                  <Loading />
-                ) : (
-                  <tbody>
-                    {products.map(
-                      (item) =>
-                        item.category && (
-                          <tr
-                            onClick={() => {
-                              setSelectable(item.id);
-                              changeModal();
-                            }}>
-                            <td>{item.id}</td>
-                            <td>{item.name}</td>
-                            <td>{item.bar_code}</td>
-                            <td>{item.category.name} </td>
-                          </tr>
-                        )
-                    )}
-                  </tbody>
-                )}
-              </table>
-            </TableContainer>
-          )}
+          <TableContainer>
+            <table>
+              <thead>
+                <tr>
+                  {handle.map((h) => (
+                    <th
+                      id={h.id}
+                      onClick={() => changeSearchBy(h.id, setSearchBy, handle)}>
+                      {h.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              {loading ? (
+                <Loading />
+              ) : products.length <= 0 ? (
+                <tbody>
+                  <td></td>
+                  <td>
+                    <EmptyPage
+                      search={searchData}
+                      model={handle.find((h) => h.id === searchBy)?.name}
+                    />
+                  </td>
+                </tbody>
+              ) : (
+                <tbody>
+                  {products.map((item) => (
+                    <tr
+                      onClick={() => {
+                        setSelectable(item.id);
+                        changeModal();
+                      }}>
+                      <td>{item.id}</td>
+                      <td>{item.name}</td>
+                      <td>{item.bar_code}</td>
+                      <td>{item.category.name} </td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
+            </table>
+          </TableContainer>
         </Container>
       </SecondLayout>
     </>

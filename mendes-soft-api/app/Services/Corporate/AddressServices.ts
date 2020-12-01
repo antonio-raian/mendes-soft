@@ -9,7 +9,7 @@ export default class AddressServices {
   }
 
   public async read(search: object) {
-    return await Address.query().where(search);
+    return await Address.query().where(search).orderBy("createAt", "asc");
   }
 
   public async update(newAddress) {

@@ -26,7 +26,8 @@ export default class SaleServices {
       })
       .preload("client", (q) => {
         q.preload("person");
-      });
+      })
+      .orderBy("createAt", "desc");
   }
 
   public async update(newSale) {

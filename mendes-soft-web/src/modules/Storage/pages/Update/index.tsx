@@ -110,6 +110,12 @@ const ProductUpdate: React.FC = () => {
           });
           return;
         }
+        console.log(error.response);
+        toast.addToast({
+          title: "Falha",
+          type: "error",
+          description: `${Object.values(error.response)}`,
+        });
       }
     },
     [toast]

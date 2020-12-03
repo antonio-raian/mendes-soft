@@ -21,8 +21,8 @@ export default class PurchasesController {
         await toStorage(
           i.id,
           Number(item.quantity),
-          i.gain,
-          Number(item.unit_value)
+          Number(item.unit_value),
+          i.gain
         );
       })
     );

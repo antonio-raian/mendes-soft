@@ -1,6 +1,7 @@
 import Category from "App/Models/Product/Category";
 import Item from "App/Models/Product/Item";
-import { toStorage } from "../Financial/utils";
+import Storage from "App/Models/Stock/Storage";
+import { toStorage, updateStorage } from "../Financial/utils";
 
 export default class ItemServices {
   public async create(newItem: Item, categoryId: number) {
@@ -39,7 +40,7 @@ export default class ItemServices {
 
     await item.merge(newItem);
 
-    newItem.gain && (await toStorage(item.id, 0, newItem.gain));
+    newItem.gain && (await updateStorage(item.id, item.gain));
 
     return await item.save();
   }

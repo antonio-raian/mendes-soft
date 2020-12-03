@@ -98,6 +98,12 @@ const ModalAddProduct: React.FC<ModalProps> = ({
           });
           return;
         }
+        console.log(error.response);
+        toast.addToast({
+          title: "Falha",
+          type: "error",
+          description: `${Object.values(error.response)}`,
+        });
       }
     },
     [toast, products]

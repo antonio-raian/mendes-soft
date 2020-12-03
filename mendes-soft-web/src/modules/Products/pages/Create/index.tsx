@@ -61,7 +61,7 @@ const ProductCreate: React.FC = () => {
         const schope = Yup.object().shape({
           category: Yup.number().required("Categoria é obrigatória!").min(1),
           item: Yup.object().shape({
-            bar_code: Yup.string().required("Código de Barra Obrigatório"),
+            bar_code: Yup.string(),
             name: Yup.string().required("Nome Obrigatório"),
             description: Yup.string(),
             gain: Yup.number(),

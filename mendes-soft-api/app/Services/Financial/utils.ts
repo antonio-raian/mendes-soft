@@ -3,23 +3,16 @@ import StorageServices from "App/Services/Stock/StorageServices";
 export const toStorage = async (
   itemId,
   quantity: number,
-  gain?: number,
-  unit_value?
+  unit_value?: number,
+  gain?: number
 ) => {
   console.log("toStore", itemId, quantity, gain, unit_value);
   const storage = await new StorageServices().read({
     item_id: itemId,
   });
 
-  let valueGain = 0;
-  if (gain) {
-    if (unit_value) {
-      valueGain = unit_value + unit_value * (gain / 100); //Valor com a porcentagem de ganho
-    } else {
-      valueGain = storage[0].value_cost + storage[0].value_cost * (gain / 100); //Valor com a porcentagem de ganho
-    }
-  }
-  console.log("valor", valueGain, storage);
+  let valueGain =
+    gain && unit_value ? unit_value + unit_value * (gain / 100) : 0;
 
   if (storage.length > 0) {
     await new StorageServices().update({
@@ -53,4 +46,17 @@ export const fromStorage = async (itemId, quantity: number) => {
     ...storage[0].toJSON(),
     quantity: storage[0].quantity - quantity,
   });
+};
+
+export const updateStorage = async (itemId, gain: number) => {
+  const storage = await new StorageServices().read({ item_id: itemId });
+
+  if (storage.length > 0) {
+    let valueGain =
+      storage[0].value_cost + storage[0].value_cost * (gain / 100);
+    await new StorageServices().update({
+      ...storage[0].toJSON(),
+      value_sale: valueGain + valueGain * 0.12,
+    });
+  }
 };

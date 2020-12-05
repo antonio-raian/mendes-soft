@@ -13,6 +13,7 @@ export default class PurchasesController {
     await Promise.all(
       purchase.items.map(async (item) => {
         const i = (await new ItemServices().read({ id: item.id }))[0];
+
         item["name"] = i.name;
         item["internal_code"] = i.internal_code;
         item["bar_code"] = i.bar_code;

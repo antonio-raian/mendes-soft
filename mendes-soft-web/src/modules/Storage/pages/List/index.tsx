@@ -3,7 +3,7 @@ import TableContainer from "@/components/TableContainer";
 import TopLists from "@/components/TopLists";
 import EmptyPage from "@/components/EmptyPage";
 import { useAuth } from "@/hooks/auth";
-import { Item, Storage } from "@/interfaces";
+import { Item, MetaListpaginated, Storage } from "@/interfaces";
 import SecondLayout from "@/layouts/SecondLayout";
 import api from "@/services/api";
 import changeSearchBy from "@/utils/changeSearch";
@@ -12,6 +12,7 @@ import { useHistory } from "react-router-dom";
 import ModalDetails from "../../components/ModalDetails";
 import { Container } from "./styles";
 import Loading from "@/components/Loading";
+import TableFooter from "@/components/TableFooter";
 
 const handle = [
   { id: "bar_code", name: "Cód. Barra" },
@@ -19,6 +20,11 @@ const handle = [
   { id: "value_sale", name: "Valor de Venda" },
   { id: "quantity", name: "Quantidade" },
 ];
+
+interface ItensPaginate {
+  data: Storage[];
+  meta: MetaListpaginated;
+}
 
 const StorageList: React.FC = () => {
   const history = useHistory();
@@ -32,6 +38,7 @@ const StorageList: React.FC = () => {
 
   const [searchBy, setSearchBy] = useState("bar_code");
   const [searchData, setSearchData] = useState("");
+  const [metaSearch, setMetaSearch] = useState({} as MetaListpaginated);
   useEffect(() => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
@@ -40,13 +47,10 @@ const StorageList: React.FC = () => {
     setLoading(true);
     async function handleLoadItem() {
       await api
-        .get<Item[]>(`/item?${searchBy}=%${searchData}%`)
+        .get<ItensPaginate>(`/storage?${searchBy}=%${searchData}%&page=1`)
         .then((response) => {
-          setStorage(
-            response.data
-              .filter((i) => i.storage)
-              .map((item) => item.storage && { ...item.storage, item: item })
-          );
+          setMetaSearch(response.data.meta);
+          setStorage(response.data.data);
           setLoading(false);
         })
         .catch((e) => {
@@ -59,9 +63,10 @@ const StorageList: React.FC = () => {
     }
     async function handleLoad() {
       await api
-        .get("/storage")
+        .get<ItensPaginate>("/storage?page=1")
         .then((response) => {
-          setStorage(response.data);
+          setMetaSearch(response.data.meta);
+          setStorage(response.data.data);
           setLoading(false);
         })
         .catch((e) => {
@@ -78,6 +83,42 @@ const StorageList: React.FC = () => {
   const changeModal = useCallback(() => {
     setModalDetails((states) => !states);
   }, [setModalDetails]);
+
+  const nextPage = async () => {
+    setLoading(true);
+    await api
+      .get(`/storage?page=${metaSearch.current_page + 1}`)
+      .then((response) => {
+        setMetaSearch(response.data.meta);
+        setStorage(response.data.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
+  };
+
+  const backPage = async () => {
+    setLoading(true);
+    await api
+      .get(`/storage?page=${metaSearch.current_page - 1}`)
+      .then((response) => {
+        setMetaSearch(response.data.meta);
+        setStorage(response.data.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
+  };
 
   return (
     <>
@@ -142,6 +183,11 @@ const StorageList: React.FC = () => {
                   ))}
                 </tbody>
               )}
+              <TableFooter
+                meta={metaSearch}
+                actionNext={nextPage}
+                actionBack={backPage}
+              />
             </table>
           </TableContainer>
         </Container>

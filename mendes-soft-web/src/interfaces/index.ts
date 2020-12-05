@@ -74,3 +74,16 @@ export interface Employee {
   active: boolean;
   person: Person;
 }
+
+// Utils
+export interface MetaListpaginated {
+  current_page: number;
+  first_page: number;
+  first_page_url: string;
+  last_page: number;
+  last_page_url: string;
+  next_page_url: number;
+  per_page: number;
+  previous_page_url: number;
+  total: number;
+}

@@ -1,23 +1,30 @@
 import EmptyPage from "@/components/EmptyPage";
 import Loading from "@/components/Loading";
 import TableContainer from "@/components/TableContainer";
+import TableFooter from "@/components/TableFooter";
 import TopLists from "@/components/TopLists";
 import { useAuth } from "@/hooks/auth";
-import { Item } from "@/interfaces";
+import { Item, MetaListpaginated } from "@/interfaces";
 import SecondLayout from "@/layouts/SecondLayout";
 import api from "@/services/api";
 import changeSearchBy from "@/utils/changeSearch";
+import { AxiosResponse } from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
 import ModalDetails from "../../components/ModalDetails";
 import { Container } from "./styles";
 
+interface ItensPaginate {
+  data: Item[];
+  meta: MetaListpaginated;
+}
+
 const handle = [
-  { id: "id", name: "Cód. Interno" },
-  { id: "name", name: "Nome" },
-  { id: "bar_code", name: "Cód. Barra" },
-  { id: "category", name: "Categoria" },
+  { id: "id", name: "Cód. Interno", style: { width: "10%" } },
+  { id: "name", name: "Nome", style: { width: "40%" } },
+  { id: "bar_code", name: "Cód. Barra", style: { width: "25%" } },
+  { id: "category", name: "Categoria", style: { width: "25%" } },
 ];
 
 const ProductList: React.FC = () => {
@@ -32,6 +39,7 @@ const ProductList: React.FC = () => {
 
   const [searchBy, setSearchBy] = useState("name");
   const [searchData, setSearchData] = useState("");
+  const [metaSearch, setMetaSearch] = useState({} as MetaListpaginated);
   useEffect(() => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
@@ -40,13 +48,14 @@ const ProductList: React.FC = () => {
     setLoading(true);
     async function handleLoad() {
       await api
-        .get("/item")
+        .get("/item?page=1")
         .then((response) => {
-          setProducts(response.data);
+          setMetaSearch(response.data.meta);
+          setProducts(response.data.data);
           setLoading(false);
         })
         .catch((e) => {
-          console.log(e.response);
+          console.log(e);
           if (e.response?.status === 401) {
             signOut();
             history.goBack();
@@ -55,13 +64,14 @@ const ProductList: React.FC = () => {
     }
     async function handleLoadSearch() {
       await api
-        .get<Item[]>(
+        .get<ItensPaginate>(
           `/item?${searchBy}=${
             searchBy === "id" ? searchData : `%${searchData}%`
-          }`
+          }&page=1`
         )
         .then((response) => {
-          setProducts(response.data.filter((i) => i.category));
+          setMetaSearch(response.data.meta);
+          setProducts(response.data.data.filter((i) => i.category));
 
           setLoading(false);
         })
@@ -79,6 +89,42 @@ const ProductList: React.FC = () => {
   const changeModal = useCallback(() => {
     setModalDetails((states) => !states);
   }, [setModalDetails]);
+
+  const nextPage = async () => {
+    setLoading(true);
+    await api
+      .get(`/item?page=${metaSearch.current_page + 1}`)
+      .then((response) => {
+        setMetaSearch(response.data.meta);
+        setProducts(response.data.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
+  };
+
+  const backPage = async () => {
+    setLoading(true);
+    await api
+      .get(`/item?page=${metaSearch.current_page - 1}`)
+      .then((response) => {
+        setMetaSearch(response.data.meta);
+        setProducts(response.data.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
+  };
 
   return (
     <>
@@ -114,7 +160,8 @@ const ProductList: React.FC = () => {
                   {handle.map((h) => (
                     <th
                       id={h.id}
-                      onClick={() => changeSearchBy(h.id, setSearchBy, handle)}>
+                      onClick={() => changeSearchBy(h.id, setSearchBy, handle)}
+                      style={h.style}>
                       {h.name}
                     </th>
                   ))}
@@ -148,6 +195,11 @@ const ProductList: React.FC = () => {
                   ))}
                 </tbody>
               )}
+              <TableFooter
+                meta={metaSearch}
+                actionNext={nextPage}
+                actionBack={backPage}
+              />
             </table>
           </TableContainer>
         </Container>

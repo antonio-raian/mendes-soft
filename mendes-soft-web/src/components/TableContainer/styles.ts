@@ -38,7 +38,7 @@ export const Container = styled.section`
     }
 
     td {
-      padding: 20px 30px;
+      padding: 15px 30px;
       border-bottom: 2px solid #eee;
       background: #fff;
       font-weight: 500;

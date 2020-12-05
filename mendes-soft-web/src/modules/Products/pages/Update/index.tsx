@@ -75,7 +75,7 @@ const ProductUpdate: React.FC = () => {
         const schope = Yup.object().shape({
           item: Yup.object().shape({
             id: Yup.number(),
-            bar_code: Yup.string().required("Código de Barra Obrigatório"),
+            bar_code: Yup.string(),
             name: Yup.string().required("Nome Obrigatório"),
             description: Yup.string(),
             gain: Yup.number(),

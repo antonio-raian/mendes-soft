@@ -17,10 +17,7 @@ export default class Items extends BaseSchema {
 
         table.timestamps(true);
       });
-    } else
-      this.schema.alterTable(this.tableName, (table) => {
-        table.string("bar_code").alter();
-      });
+    }
   }
 
   public async down() {

@@ -14,24 +14,31 @@ export default class ItemServices {
     return item;
   }
 
-  public async read(search: object) {
+  public async read(search) {
     const key = Object.keys(search)[0];
     if (key === "bar_code" || key === "name" || key === "description")
       return await Item.query()
         .whereRaw(`LOWER(${key}) like  LOWER('${search[key]}')`)
         .preload("category")
         .preload("storage")
-        .orderBy("id", "asc");
+        .orderBy("id", "asc")
+        .paginate(search.page, 8);
     if (key === "category")
       return await Item.query()
         .preload("category", (q) => {
           q.whereRaw(`LOWER(name) like  LOWER('${search[key]}')`);
         })
-        .orderBy("id", "asc");
+        .orderBy("id", "asc")
+        .paginate(search.page, 8);
+    if (search.page)
+      return await Item.query()
+        .preload("category")
+        .orderBy("id", "asc")
+        .paginate(search.page, 8);
     return await Item.query()
       .where(search)
       .preload("category")
-      .orderBy("id", "asc");
+      .orderBy("name", "asc");
   }
 
   public async update(newItem) {

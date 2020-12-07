@@ -48,7 +48,7 @@ const PurchaseDetails: React.FC = () => {
         .get<Purchase[]>(`/purchase?id=${state.itemId}`)
         .then((res) => {
           setPurchase(res.data[0]);
-          setItens(JSON.parse(res.data[0].items));
+          setItens(res.data[0].items);
           setLoading(false);
         })
         .catch((e) => {
@@ -79,7 +79,7 @@ const PurchaseDetails: React.FC = () => {
   }, []);
 
   return (
-    <SecondLayout topTitle="Nova Compra">
+    <SecondLayout topTitle="Compra">
       {loading ? (
         <Loading />
       ) : (

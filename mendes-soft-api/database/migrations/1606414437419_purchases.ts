@@ -9,7 +9,7 @@ export default class Purchases extends BaseSchema {
         table.bigIncrements("id");
 
         table.bigInteger("employee_id").references("employes.id");
-        table.string("items").notNullable(); // array de objetos contendo dados do produto + quantidade + valores
+        table.json("items").notNullable(); // array de objetos contendo dados do produto + quantidade + valores
         table.float("value");
         table.enu("type_payment", ["money", "card"]);
         table.timestamp("expected_payment_date");

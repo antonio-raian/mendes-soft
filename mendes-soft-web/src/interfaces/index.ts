@@ -57,9 +57,25 @@ export interface Storage {
 
 export interface Purchase {
   id: string;
-  items: string;
+  items: [];
   value: number;
   type_payment: string;
+  expected_payment_date: string;
+  status: string;
+  active: boolean;
+  created_at: string;
+  employee: Employee;
+}
+
+export interface Sale {
+  id: string;
+  items: string;
+  gross_value: number;
+  net_value: number;
+  discount: number;
+  type_payment: string;
+  form_payment: string;
+  payment_date: string;
   expected_payment_date: string;
   status: string;
   active: boolean;

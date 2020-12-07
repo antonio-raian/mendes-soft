@@ -9,7 +9,7 @@ export const FormPayment = [
 ];
 
 export const Status = [
-  { id: 1, label: "Pago", value: "paid" },
-  { id: 2, label: "Pendente", value: "pending" },
+  { id: 1, label: "Pendente", value: "pending" },
+  { id: 2, label: "Pago", value: "paid" },
   { id: 3, label: "Cacelada", value: "canceled" },
 ];

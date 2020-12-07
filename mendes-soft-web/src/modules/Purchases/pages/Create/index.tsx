@@ -120,15 +120,16 @@ const PurchaseCreate: React.FC = () => {
         await schope.validate(data, {
           abortEarly: false,
         });
+        await api.post("/purchase", { purchase: { items, ...data } });
+
+        localStorage.setItem("@mendes-soft:itens_compra", "[]");
+
         toast.addToast({
           title: "Sucesso",
           type: "success",
           description: `Salvou nova compra`,
         });
 
-        await api.post("/purchase", { purchase: { items, ...data } });
-
-        localStorage.setItem("@mendes-soft:itens_compra", "[]");
         history.goBack();
       } catch (error) {
         if (error instanceof Yup.ValidationError) {

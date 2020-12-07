@@ -7,7 +7,7 @@ export default class Purchase extends BaseModel {
   public id: number;
 
   @column({ serializeAs: null }) public "employee_id": number;
-  @column() public "items": string; // array de objetos contendo dados do produto + quantidade + valores
+  @column() public "items": JSON; // array de objetos contendo dados do produto + quantidade + valores
   @column() public "value": number;
   @column() public "type_payment": string;
   @column() public "expected_payment_date": DateTime;

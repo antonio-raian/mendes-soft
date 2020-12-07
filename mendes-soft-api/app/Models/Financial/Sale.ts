@@ -16,7 +16,7 @@ export default class Sale extends BaseModel {
   @column() public "type_payment": string;
   @column() public "form_payment": string;
   @column() public "payment_date": DateTime;
-  @column() public "expected_payment_date": DateTime;
+  @column() public "expected_payment_date": JSON;
   @column() public "status": string;
 
   @column()

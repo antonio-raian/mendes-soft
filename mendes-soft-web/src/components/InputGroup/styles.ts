@@ -7,10 +7,12 @@ export const Container = styled.div`
 
   > div {
     flex: 1;
-    margin: 0 5px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
 
     & + div {
-      margin-top: 0;
+      margin-top: 0px;
     }
 
     &:first-child {
@@ -19,6 +21,7 @@ export const Container = styled.div`
 
     &:last-child {
       margin-right: 0px;
+      margin-top: 0px;
     }
   }
 `;

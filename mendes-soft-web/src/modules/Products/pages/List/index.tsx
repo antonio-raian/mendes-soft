@@ -171,13 +171,11 @@ const ProductList: React.FC = () => {
                 <Loading />
               ) : products.length <= 0 ? (
                 <tbody>
-                  <td></td>
-                  <td>
-                    <EmptyPage
-                      search={searchData}
-                      model={handle.find((h) => h.id === searchBy)?.name}
-                    />
-                  </td>
+                  <tr>
+                    <td colSpan={4}>
+                      <EmptyPage />
+                    </td>
+                  </tr>
                 </tbody>
               ) : (
                 <tbody>

@@ -14,17 +14,21 @@ const DashBoard = () => {
 
   const [dataCategory, setDataCategory] = useState<ReactText[][]>([]);
   const [loading, setLoading] = useState(true);
+  const [totalProds, setTotalProds] = useState(0);
 
   useEffect(() => {
     async function handleLoad() {
       await api
         .get<Category[]>("/category")
         .then((response) => {
+          let totalItens = 0;
           const aux: ReactText[][] = [["Category", "Itens"]];
-          response.data.map((cat) => {
+          response.data.forEach((cat) => {
+            totalItens += cat.items.length;
             aux.push([cat.name, cat.items.length]);
           });
           setDataCategory(aux);
+          setTotalProds(totalItens);
           setLoading(false);
           console.log(aux);
         })
@@ -37,7 +41,7 @@ const DashBoard = () => {
         });
     }
     handleLoad();
-  }, []);
+  }, [history, signOut]);
 
   return (
     <DashboardLayout>
@@ -53,7 +57,7 @@ const DashBoard = () => {
             options={{
               legend: "none",
               pieSliceText: "label",
-              title: "Quantidade de Produtos por Categoria",
+              title: `Quantidade de Produtos por Categoria\nTotal de Produtos: ${totalProds}`,
             }}
           />
         )}

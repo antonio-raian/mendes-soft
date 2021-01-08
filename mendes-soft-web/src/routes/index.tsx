@@ -23,6 +23,12 @@ import Login from "@/pages/Login";
 import PurchaseDetails from "@/modules/Purchases/pages/Details";
 import Storage from "@/pages/Storage";
 import StorageList from "@/modules/Storage/pages/List";
+import SaleList from "@/modules/Sales/pages/List";
+import SaleCreate from "@/modules/Sales/pages/Create";
+import SaleDetails from "@/modules/Sales/pages/Details";
+import EmployeeList from "@/modules/Employees/pages/List";
+import EmployeeCreate from "@/modules/Employees/pages/Create";
+import EmployeeDetails from "@/modules/Employees/pages/Details";
 
 const Routes = () => {
   return (
@@ -57,8 +63,9 @@ const Routes = () => {
         component={NonPage}
       />
       <Route isPrivate exact path="/vendas" component={Sales} />
-      <Route isPrivate exact path="/vendas/lista" component={NonPage} />
-      <Route isPrivate exact path="/vendas/cadastro" component={NonPage} />
+      <Route isPrivate exact path="/vendas/lista" component={SaleList} />
+      <Route isPrivate exact path="/vendas/cadastro" component={SaleCreate} />
+      <Route isPrivate exact path="/vendas/detalhes" component={SaleDetails} />
       <Route isPrivate exact path="/vendas/atualiza" component={NonPage} />
       <Route isPrivate exact path="/vendas/relatorios" component={NonPage} />
       <Route isPrivate exact path="/compras" component={Purchases} />
@@ -92,12 +99,23 @@ const Routes = () => {
       />
       <Route isPrivate exact path="/estoques/relatorios" component={NonPage} />
       <Route isPrivate exact path="/funcionarios" component={Employees} />
-      <Route isPrivate exact path="/funcionarios/lista" component={NonPage} />
+      <Route
+        isPrivate
+        exact
+        path="/funcionarios/lista"
+        component={EmployeeList}
+      />
       <Route
         isPrivate
         exact
         path="/funcionarios/cadastro"
-        component={NonPage}
+        component={EmployeeCreate}
+      />
+      <Route
+        isPrivate
+        exact
+        path="/funcionarios/detalhes"
+        component={EmployeeDetails}
       />
       <Route
         isPrivate

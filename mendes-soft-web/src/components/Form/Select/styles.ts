@@ -19,7 +19,6 @@ export const SelectComponent = styled(ReactSelect).attrs({
   styles: {
     control: (styles) => ({
       ...styles,
-      height: 45,
       backgroundColor: "#fff",
       borderRadius: 5,
       borderColor: "#ddd",
@@ -46,6 +45,7 @@ export const SelectComponent = styled(ReactSelect).attrs({
       ...styles,
       fontFamily: "Roboto",
     }),
+    menu: (styles) => ({ ...styles, maxHeight: "400%", overflow: "auto" }),
   } as Styles,
 })``;
 

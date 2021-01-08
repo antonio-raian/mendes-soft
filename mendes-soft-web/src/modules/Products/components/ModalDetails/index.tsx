@@ -24,14 +24,14 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
   const [modalDelete, setModalDelete] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  async function handleLoad() {
-    setLoading(true);
-    await api.get(`/item?id=${itemId}`).then((response) => {
-      setProduct(response.data[0]);
-      setLoading(false);
-    });
-  }
   useEffect(() => {
+    async function handleLoad() {
+      setLoading(true);
+      await api.get(`/item?id=${itemId}`).then((response) => {
+        setProduct(response.data[0]);
+        setLoading(false);
+      });
+    }
     isOpen && handleLoad();
   }, [isOpen, itemId]);
 

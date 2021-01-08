@@ -3,14 +3,15 @@ import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
   padding: 30px;
-  width: 90%;
+  width: 100%;
   background-color: white;
+  overflow: auto;
 
   button {
     display: flex;
     margin-top: 20px;
-    height: 10%;
-    width: 15%;
+    height: 20%;
+    width: 30%;
     justify-content: space-evenly;
     align-items: center;
     text-align: left;

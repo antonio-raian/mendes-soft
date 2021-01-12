@@ -25,6 +25,6 @@ export default class Sales extends BaseSchema {
   }
 
   public async down() {
-    this.schema.dropTable(this.tableName);
+    // this.schema.dropTable(this.tableName);
   }
 }

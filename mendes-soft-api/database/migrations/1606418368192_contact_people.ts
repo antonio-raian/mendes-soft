@@ -22,23 +22,7 @@ export default class ContactPeople extends BaseSchema {
 
         table.timestamps(true);
       });
-    } else
-      this.schema.alterTable(this.tableName, (table) => {
-        table.dropForeign(["person_id"]);
-        table.dropForeign(["contact_id"]);
-        table
-          .bigInteger("person_id")
-          .references("people.id")
-          .notNullable()
-          .onDelete("cascade")
-          .alter();
-        table
-          .bigInteger("contact_id")
-          .references("contacts.id")
-          .notNullable()
-          .onDelete("cascade")
-          .alter();
-      });
+    } else this.schema.alterTable(this.tableName, (table) => {});
   }
 
   public async down() {

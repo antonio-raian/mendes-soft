@@ -10,12 +10,21 @@ export default class EmployeeServices {
     return employe;
   }
 
-  public async read(search: object) {
+  public async read(search) {
+    const key = Object.keys(search)[0];
+    if (key == "page")
+      return await Employe.query()
+        .preload("person", (q) => {
+          q.preload("addresses").preload("contacts");
+        })
+        .preload("user")
+        .paginate(search.page, 8);
     return await Employe.query()
       .where(search)
       .preload("person", (q) => {
         q.preload("addresses").preload("contacts");
-      });
+      })
+      .preload("user");
   }
 
   public async update(newEmploye) {

@@ -15,10 +15,7 @@ export default class StorageServices {
     const key = Object.keys(search)[0];
     if (key === "bar_code" || key === "name") {
       const itens = (await new ItemServices().read(search)).rows;
-      console.log(
-        "aaaa",
-        itens.map((i) => i.id)
-      );
+
       return await Storage.query()
         .whereIn(
           "item_id",

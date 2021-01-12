@@ -37,10 +37,14 @@ export const fromStorage = async (itemId, quantity: number) => {
   const storage = await new StorageServices().read({ item_id: itemId });
 
   if (storage.length <= 0 || storage[0].quantity == 0)
-    throw { status: 400, code: "NO_STOCK" };
+    throw { status: 400, code: "NO_STOCK", message: storage[0].item.name };
 
   if (storage[0].quantity < quantity)
-    throw { status: 400, code: "NO_ENOUGTH_STOCK" };
+    throw {
+      status: 400,
+      code: "NO_ENOUGTH_STOCK",
+      message: storage[0].item.name,
+    };
 
   await new StorageServices().update({
     ...storage[0].toJSON(),

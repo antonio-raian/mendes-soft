@@ -1,7 +1,7 @@
 import Category from "App/Models/Product/Category";
 import Item from "App/Models/Product/Item";
-import Storage from "App/Models/Stock/Storage";
-import { toStorage, updateStorage } from "../Financial/utils";
+import { updateStorage } from "../Financial/utils";
+import CategoryServices from "./CategoryServices";
 
 export default class ItemServices {
   public async create(newItem: Item, categoryId: number) {
@@ -23,13 +23,19 @@ export default class ItemServices {
         .preload("storage")
         .orderBy("id", "asc")
         .paginate(search.page, 8);
-    if (key === "category")
+    if (key === "category") {
+      const categories = await new CategoryServices().read({
+        name: search[key],
+      });
       return await Item.query()
-        .preload("category", (q) => {
-          q.whereRaw(`LOWER(name) like  LOWER('${search[key]}')`);
-        })
+        .whereIn(
+          "category_id",
+          categories.map((c) => c.id)
+        )
+        .preload("category")
         .orderBy("id", "asc")
         .paginate(search.page, 8);
+    }
     if (search.page)
       return await Item.query()
         .preload("category")

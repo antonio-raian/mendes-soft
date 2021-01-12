@@ -22,6 +22,7 @@ export default class SalesController {
         )[0];
 
         item["unit_value"] = storage.value_sale;
+        item["name"] = i.name;
         item["total_value"] = item.quantity * storage.value_sale;
 
         value += item.quantity * storage.value_sale;
@@ -32,8 +33,9 @@ export default class SalesController {
       {
         ...sale,
         items: JSON.stringify(sale.items),
+        expected_payment_date: JSON.stringify(sale.expected_payment_date),
         gross_value: value,
-        net_value: value - value * sale.discount,
+        net_value: value - value * (sale.discount / 100),
       },
       user.employee_id,
       client

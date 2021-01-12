@@ -7,6 +7,21 @@ export interface Person {
   contacts: [Contact];
 }
 
+export interface Client {
+  id: string;
+  limit: number;
+  active: boolean;
+  person: Person;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  remember_me_token: string;
+  active: boolean;
+  employee: Employee;
+}
+
 export interface Address {
   id: string;
   cep: string;
@@ -69,14 +84,14 @@ export interface Purchase {
 
 export interface Sale {
   id: string;
-  items: string;
+  items: [];
   gross_value: number;
   net_value: number;
   discount: number;
   type_payment: string;
   form_payment: string;
   payment_date: string;
-  expected_payment_date: string;
+  expected_payment_date: [];
   status: string;
   active: boolean;
   created_at: string;
@@ -89,6 +104,7 @@ export interface Employee {
   salary: number;
   active: boolean;
   person: Person;
+  user: User;
 }
 
 // Utils

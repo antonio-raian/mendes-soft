@@ -3,13 +3,14 @@ import TableContainer from "@/components/TableContainer";
 import TopLists from "@/components/TopLists";
 import EmptyPage from "@/components/EmptyPage";
 import { useAuth } from "@/hooks/auth";
-import { Item, MetaListpaginated, Storage } from "@/interfaces";
+import { MetaListpaginated, Storage } from "@/interfaces";
 import SecondLayout from "@/layouts/SecondLayout";
 import api from "@/services/api";
 import changeSearchBy from "@/utils/changeSearch";
 import { FiSearch } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
 import ModalDetails from "../../components/ModalDetails";
+import ModalCreate from "../../components/ModalCreate";
 import { Container } from "./styles";
 import Loading from "@/components/Loading";
 import TableFooter from "@/components/TableFooter";
@@ -33,6 +34,7 @@ const StorageList: React.FC = () => {
   const [storages, setStorage] = useState<Storage[]>([]);
 
   const [selectable, setSelectable] = useState("");
+  const [modalCreate, setModalCreate] = useState(false);
   const [modalDetails, setModalDetails] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -78,11 +80,15 @@ const StorageList: React.FC = () => {
         });
     }
     searchData ? handleLoadItem() : handleLoad();
-  }, [modalDetails, searchBy, searchData]);
+  }, [modalCreate, modalDetails, searchBy, searchData, history, signOut]);
 
-  const changeModal = useCallback(() => {
+  const changeModalDetails = useCallback(() => {
     setModalDetails((states) => !states);
   }, [setModalDetails]);
+
+  const changeModalCreate = useCallback(() => {
+    setModalCreate((states) => !states);
+  }, [setModalCreate]);
 
   const nextPage = async () => {
     setLoading(true);
@@ -124,13 +130,16 @@ const StorageList: React.FC = () => {
     <>
       <ModalDetails
         isOpen={modalDetails}
-        setIsOpen={changeModal}
+        setIsOpen={changeModalDetails}
         itemId={selectable}
       />
 
+      <ModalCreate isOpen={modalCreate} setIsOpen={changeModalCreate} />
+
       <SecondLayout topTitle="Estoque">
         <Container>
-          <TopLists containerStyle={{ justifyContent: "flex-end" }}>
+          <TopLists>
+            <button onClick={changeModalCreate}>Adicionar Estoque</button>
             <div>
               <FiSearch size={20} />
               <input
@@ -162,10 +171,11 @@ const StorageList: React.FC = () => {
                 <Loading />
               ) : storages.length <= 0 ? (
                 <tbody>
-                  <td></td>
-                  <td>
-                    <EmptyPage />
-                  </td>
+                  <tr>
+                    <td colSpan={4}>
+                      <EmptyPage />
+                    </td>
+                  </tr>
                 </tbody>
               ) : (
                 <tbody>
@@ -173,7 +183,7 @@ const StorageList: React.FC = () => {
                     <tr
                       onClick={() => {
                         setSelectable(stock?.id);
-                        changeModal();
+                        changeModalDetails();
                       }}>
                       <td>{stock?.item.bar_code}</td>
                       <td>{stock?.item.name}</td>

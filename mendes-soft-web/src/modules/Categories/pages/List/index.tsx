@@ -61,59 +61,62 @@ const CategoryList: React.FC = () => {
       />
 
       <SecondLayout topTitle="Categorias">
-        {loading ? (
-          <Loading />
-        ) : (
-          <Container>
-            <TopLists>
-              <button onClick={changeModalCreate}>Nova Categoria</button>
+        <Container>
+          <TopLists>
+            <button onClick={changeModalCreate}>Nova Categoria</button>
 
-              <div>
-                <FiSearch size={20} />
-                <input
-                  placeholder={`Buscar por ${
-                    handle.find((h) => h.id === searchBy)?.name
-                  }`}
-                  name="search"
-                />
-              </div>
-            </TopLists>
-            {categories.length <= 0 ? (
-              <EmptyPage />
-            ) : (
-              <TableContainer>
-                <table>
-                  <thead>
-                    <tr>
-                      {handle.map((h) => (
-                        <th
-                          id={h.id}
-                          onClick={() =>
-                            changeSearchBy(h.id, setSearchBy, handle)
-                          }>
-                          {h.name}
-                        </th>
-                      ))}
+            <div>
+              <FiSearch size={20} />
+              <input
+                placeholder={`Buscar por ${
+                  handle.find((h) => h.id === searchBy)?.name
+                }`}
+                name="search"
+              />
+            </div>
+          </TopLists>
+
+          <TableContainer>
+            <table>
+              <thead>
+                <tr>
+                  {handle.map((h) => (
+                    <th
+                      id={h.id}
+                      onClick={() => changeSearchBy(h.id, setSearchBy, handle)}>
+                      {h.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              {loading ? (
+                <Loading />
+              ) : categories.length <= 0 ? (
+                <tbody>
+                  <tr>
+                    <td colSpan={3}>
+                      <EmptyPage />
+                    </td>
+                  </tr>
+                </tbody>
+              ) : (
+                <tbody>
+                  {categories.map((cat) => (
+                    <tr
+                      onClick={() => {
+                        setSelectable(cat.id);
+                        changeModalDetails();
+                      }}>
+                      <td>{cat.id}</td>
+                      <td>{cat.name}</td>
+                      <td>{cat.description}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {categories.map((cat) => (
-                      <tr
-                        onClick={() => {
-                          setSelectable(cat.id);
-                          changeModalDetails();
-                        }}>
-                        <td>{cat.id}</td>
-                        <td>{cat.name}</td>
-                        <td>{cat.description}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </TableContainer>
-            )}
-          </Container>
-        )}
+                  ))}
+                </tbody>
+              )}
+            </table>
+          </TableContainer>
+        </Container>
       </SecondLayout>
     </>
   );

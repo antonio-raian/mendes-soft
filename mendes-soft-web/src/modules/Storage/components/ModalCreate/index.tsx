@@ -1,6 +1,4 @@
 /* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-empty-pattern */
-
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -10,7 +8,7 @@ import Input from "@/components/Form/Input";
 
 import { Container } from "./styles";
 import { FiCheck } from "react-icons/fi";
-import { FormHandles } from "@unform/core";
+import { FormHandles, Scope } from "@unform/core";
 import { getValidationErrors } from "@/utils/getValidationErrors";
 import { useToast } from "@/hooks/toast";
 import ModalComponent from "@/components/Modal";
@@ -20,12 +18,10 @@ import InputGroup from "@/components/InputGroup";
 import { Item } from "@/interfaces";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "@/hooks/auth";
-import { ItemTable } from "../../pages/Create";
 
 interface ModalProps {
   isOpen: boolean;
   setIsOpen: () => void;
-  actionButton: ({}: ItemTable) => void;
 }
 
 Yup.setLocale({
@@ -34,11 +30,7 @@ Yup.setLocale({
   },
 });
 
-const ModalAddProduct: React.FC<ModalProps> = ({
-  isOpen,
-  setIsOpen,
-  actionButton,
-}) => {
+const ModalCreateStorage: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const history = useHistory();
   const formRef = useRef<FormHandles>(null);
   const { signOut } = useAuth();
@@ -75,18 +67,30 @@ const ModalAddProduct: React.FC<ModalProps> = ({
         formRef.current?.setErrors({});
 
         const schope = Yup.object().shape({
-          id: Yup.number().moreThan(0).required("Selecione o Produto"),
-          quantity: Yup.number()
-            .moreThan(0)
-            .required("Quantidade maior ou igual a 0"),
-          unit_value: Yup.number().moreThan(0).required("Valor maior que 0"),
+          item: Yup.number().moreThan(0).required("Selecione o Produto"),
+          storage: Yup.object().shape({
+            quantity: Yup.number()
+              .moreThan(0)
+              .required("Quantidade maior ou igual a 0"),
+            value_cost: Yup.number().moreThan(0).required("Valor maior que 0"),
+            value_sale: Yup.number().moreThan(0).required("Valor maior que 0"),
+          }),
         });
 
         await schope.validate(data, {
           abortEarly: false,
         });
-        const name = products?.find((prod) => prod.value === data.id)?.label;
-        actionButton({ ...data, name });
+
+        console.log(data);
+
+        await api.post("/storage", data);
+        toast.addToast({
+          title: "Sucesso",
+          type: "success",
+          description: `Salvou novo estoque de ${JSON.stringify(
+            products?.find((prod) => prod.value === data.item)?.label
+          )}`,
+        });
 
         setIsOpen();
       } catch (error) {
@@ -101,7 +105,7 @@ const ModalAddProduct: React.FC<ModalProps> = ({
           });
           return;
         }
-        console.log(error.response);
+        console.log(error.response.code);
         toast.addToast({
           title: "Falha",
           type: "error",
@@ -109,7 +113,7 @@ const ModalAddProduct: React.FC<ModalProps> = ({
         });
       }
     },
-    [toast, products, setIsOpen, actionButton]
+    [toast, products, setIsOpen]
   );
 
   return (
@@ -117,30 +121,39 @@ const ModalAddProduct: React.FC<ModalProps> = ({
       title="Adicionar Produto"
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      width={500}>
+      width={700}>
       <Container>
         <Form ref={formRef} onSubmit={handleSubmit} style={{ width: "100%" }}>
           <Select
             defaultValue={{ label: "Selecione um Produto", value: 0 }}
-            name="id"
+            name="item"
             label="Produto"
             options={products}
           />
-          <InputGroup>
-            <Input
-              name="quantity"
-              label="Quantidade"
-              type="number"
-              defaultValue={0}
-            />
-            <Input
-              name="unit_value"
-              label="Valor"
-              type="number"
-              defaultValue={0}
-              step="0.01"
-            />
-          </InputGroup>
+          <Scope path="storage">
+            <InputGroup>
+              <Input
+                name="quantity"
+                label="Quantidade"
+                type="number"
+                defaultValue={0}
+              />
+              <Input
+                name="value_cost"
+                label="Valor de Custo"
+                type="number"
+                defaultValue={0}
+                step="0.01"
+              />
+              <Input
+                name="value_sale"
+                label="Valor de Venda"
+                type="number"
+                defaultValue={0}
+                step="0.01"
+              />
+            </InputGroup>
+          </Scope>
           <button type="submit">
             <FiCheck size={25} />
             Concluir
@@ -151,4 +164,4 @@ const ModalAddProduct: React.FC<ModalProps> = ({
   );
 };
 
-export default ModalAddProduct;
+export default ModalCreateStorage;

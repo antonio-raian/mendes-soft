@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -65,7 +66,7 @@ const ProductUpdate: React.FC = () => {
       setLoading(false);
     }
     handleLoad();
-  }, [state]);
+  }, [state, history, signOut]);
 
   const handleSubmit = useCallback(
     async (data) => {
@@ -118,7 +119,7 @@ const ProductUpdate: React.FC = () => {
         });
       }
     },
-    [toast]
+    [toast, history]
   );
 
   return (

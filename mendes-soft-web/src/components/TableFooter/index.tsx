@@ -1,15 +1,13 @@
 import { MetaListpaginated } from "@/interfaces";
 import React from "react";
-import { BiArrowBack, BiSkipNext, BiSkipPrevious } from "react-icons/bi";
-import { Buttons, Container, Page, SelectComponent } from "./styles";
+import { BiSkipNext, BiSkipPrevious } from "react-icons/bi";
+import { Buttons, Container, Page } from "./styles";
 
 interface FooterProps {
   meta: MetaListpaginated;
   actionNext?: () => void;
   actionBack?: () => void;
 }
-
-const unit = [{}];
 
 const TableFooter: React.FC<FooterProps> = ({
   meta,

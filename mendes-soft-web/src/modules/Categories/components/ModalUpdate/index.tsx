@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -39,21 +40,20 @@ const ModalUpdateCategory: React.FC<ModalProps> = ({
 
   const [loading, setLoading] = useState(true);
 
-  const handleLoad = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get<Category[]>(`/category?id=${itemId}`);
-
-      setCategory(response.data[0]);
-      setLoading(false);
-    } catch (e) {
-      console.log("erro no update", e.response);
-    }
-  };
-
   useEffect(() => {
+    const handleLoad = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get<Category[]>(`/category?id=${itemId}`);
+
+        setCategory(response.data[0]);
+        setLoading(false);
+      } catch (e) {
+        console.log("erro no update", e.response);
+      }
+    };
     isOpen && handleLoad();
-  }, [isOpen]);
+  }, [isOpen, itemId]);
 
   const handleSubmit = useCallback(
     async (data) => {

@@ -1,9 +1,10 @@
 import Loading from "@/components/Loading";
 import ModalComponent from "@/components/Modal";
+import ModalDelete from "@/components/ModalDelete";
 import { Category } from "@/interfaces";
 import api from "@/services/api";
 import React, { useCallback, useEffect, useState } from "react";
-import { FiCheck, FiEdit, FiTrash2, FiX } from "react-icons/fi";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
 import ModalUpdateCategory from "../ModalUpdate";
 import { Buttons, Container, Details } from "./styles";
 
@@ -29,20 +30,19 @@ const ModalDetailsCategory: React.FC<ModalProps> = ({
   }, []);
 
   useEffect(() => {
+    const handleLoad = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get<Category[]>(`/category?id=${itemId}`);
+
+        setCategory(response.data[0]);
+        setLoading(false);
+      } catch (e) {
+        console.log("erro no details", e.response);
+      }
+    };
     isOpen && handleLoad();
-  }, [isOpen, modalUpdateCategory]);
-
-  const handleLoad = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get<Category[]>(`/category?id=${itemId}`);
-
-      setCategory(response.data[0]);
-      setLoading(false);
-    } catch (e) {
-      console.log("erro no details", e.response);
-    }
-  };
+  }, [isOpen, modalUpdateCategory, itemId]);
 
   const handleDelete = useCallback(async () => {
     setModalDeleteCategory(false);
@@ -56,7 +56,7 @@ const ModalDetailsCategory: React.FC<ModalProps> = ({
   return (
     <>
       <ModalComponent
-        title="Detalhes de Produto"
+        title="Detalhes de Categoria"
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         width={500}>
@@ -97,28 +97,13 @@ const ModalDetailsCategory: React.FC<ModalProps> = ({
       </ModalComponent>
 
       {/* Modal Delete */}
-      <ModalComponent
+      <ModalDelete
         title="Remover Categoria"
         isOpen={modalDeleteCategory}
-        setIsOpen={() => {}}
-        width={500}
-        closeOnOverlay={true}>
-        <Container>
-          <h3>Deseja remover a categoria {category.name}?</h3>
-          <Buttons>
-            <button onClick={handleDelete}>
-              <FiCheck size={20} />
-              Sim
-            </button>
-            <button
-              className="error"
-              onClick={() => setModalDeleteCategory((state) => !state)}>
-              <FiX size={20} />
-              Não
-            </button>
-          </Buttons>
-        </Container>
-      </ModalComponent>
+        modelName={category.name}
+        handleDelete={handleDelete}
+        setIsOpen={() => setModalDeleteCategory((state) => !state)}
+      />
 
       {/* Modal Update */}
       <ModalUpdateCategory

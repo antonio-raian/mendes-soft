@@ -32,10 +32,10 @@ const DashboardLayout: React.FC<LayoutProps> = ({
             <BiCabinet size={20} />
             Produto
           </MenuItem>
-          {/* <MenuItem to="/vendas" activeClassName="selected">
+          <MenuItem to="/vendas" activeClassName="selected">
             <BiCart size={20} />
             Venda
-          </MenuItem> */}
+          </MenuItem>
           <MenuItem to="/compras" activeClassName="selected">
             <BiPurchaseTagAlt size={20} />
             Compra
@@ -44,10 +44,11 @@ const DashboardLayout: React.FC<LayoutProps> = ({
             <BiBuilding size={20} />
             Estoque
           </MenuItem>
-          {/* <MenuItem to="/funcionarios" activeClassName="selected">
+          <MenuItem to="/funcionarios" activeClassName="selected">
             <BiGroup size={20} />
             Funcionário
-          </MenuItem><MenuItem to="/clientes" activeClassName="selected">
+          </MenuItem>
+          {/* <MenuItem to="/clientes" activeClassName="selected">
             <BiGroup size={20} />
             Cliente
           </MenuItem> */}

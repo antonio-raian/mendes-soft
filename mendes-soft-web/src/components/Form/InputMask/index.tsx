@@ -12,7 +12,6 @@ import { Container, Field, Header } from "./styles";
 interface InputProps extends InputMaskProps {
   label: string;
   name: string;
-  info?: string;
   containerStyle?: object;
   icon?: React.ComponentType<IconBaseProps>;
 }
@@ -24,7 +23,6 @@ type InputMaskType = ReactInputMask & {
 const InputMask: React.FC<InputProps> = ({
   label,
   name,
-  info,
   containerStyle,
   icon: Icon,
   onBlur,
@@ -33,7 +31,6 @@ const InputMask: React.FC<InputProps> = ({
   const inputMaskRef = useRef<InputMaskType>(null);
 
   const [isFocused, setIsFocused] = useState(false);
-  const [isFilled, setIsFilled] = useState(false);
 
   const { fieldName, registerField, defaultValue, error } = useField(name);
 
@@ -59,8 +56,6 @@ const InputMask: React.FC<InputProps> = ({
       if (onBlur) {
         onBlur(event);
       }
-
-      setIsFilled(!!inputMaskRef.current?.value);
     },
     [onBlur]
   );
@@ -69,7 +64,7 @@ const InputMask: React.FC<InputProps> = ({
     <Container style={containerStyle}>
       <Header>
         <label>{label}</label>
-        <span>{info}</span>
+        {error && <text>{error}</text>}
       </Header>
       <Field isFocused={isFocused} isErrored={!!error}>
         <Input

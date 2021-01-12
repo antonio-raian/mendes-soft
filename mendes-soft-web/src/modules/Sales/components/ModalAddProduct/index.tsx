@@ -1,6 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-empty-pattern */
-
+/*eslint-disable no-empty-pattern */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -17,7 +16,7 @@ import ModalComponent from "@/components/Modal";
 import api from "@/services/api";
 import Select, { SelectObject } from "@/components/Form/Select";
 import InputGroup from "@/components/InputGroup";
-import { Item } from "@/interfaces";
+import { Storage } from "@/interfaces";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "@/hooks/auth";
 import { ItemTable } from "../../pages/Create";
@@ -44,18 +43,25 @@ const ModalAddProduct: React.FC<ModalProps> = ({
   const { signOut } = useAuth();
 
   const toast = useToast();
-  const [products, setProducts] = useState<SelectObject[]>();
+
+  const [valueUnit, setValueUnit] = useState(0);
+
+  const [products, setProducts] = useState<SelectObject[]>([]);
+  const [storages, setStorages] = useState<Storage[]>([]);
 
   useEffect(() => {
     async function handlLoad() {
       await api
-        .get<Item[]>("/item")
-        .then((respProd) => {
+        .get<Storage[]>("/storage")
+        .then((respStore) => {
+          setStorages(respStore.data);
           setProducts(
-            respProd.data.map((item) => ({
-              label: item.name,
-              value: item.id,
-            }))
+            respStore.data
+              .filter((storage) => storage.quantity > 0)
+              .map((storage) => ({
+                label: storage.item.name,
+                value: storage.item.id,
+              }))
           );
         })
         .catch((e) => {
@@ -79,7 +85,7 @@ const ModalAddProduct: React.FC<ModalProps> = ({
           quantity: Yup.number()
             .moreThan(0)
             .required("Quantidade maior ou igual a 0"),
-          unit_value: Yup.number().moreThan(0).required("Valor maior que 0"),
+          unit_value: Yup.number().moreThan(0),
         });
 
         await schope.validate(data, {
@@ -109,7 +115,7 @@ const ModalAddProduct: React.FC<ModalProps> = ({
         });
       }
     },
-    [toast, products, setIsOpen, actionButton]
+    [toast, products, actionButton, setIsOpen]
   );
 
   return (
@@ -125,6 +131,16 @@ const ModalAddProduct: React.FC<ModalProps> = ({
             name="id"
             label="Produto"
             options={products}
+            onChange={(e: any) => {
+              console.log(e?.value);
+              setValueUnit(
+                Number(
+                  storages
+                    .find((store) => store.item.id === e.value)
+                    ?.value_sale.toFixed(2)
+                ) || 0
+              );
+            }}
           />
           <InputGroup>
             <Input
@@ -135,10 +151,11 @@ const ModalAddProduct: React.FC<ModalProps> = ({
             />
             <Input
               name="unit_value"
-              label="Valor"
+              label="Valor R$"
               type="number"
-              defaultValue={0}
+              value={valueUnit}
               step="0.01"
+              disabled
             />
           </InputGroup>
           <button type="submit">

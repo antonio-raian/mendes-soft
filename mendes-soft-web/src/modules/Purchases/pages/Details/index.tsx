@@ -56,7 +56,7 @@ const PurchaseDetails: React.FC = () => {
         });
     }
     handleLoad();
-  }, []);
+  }, [state]);
 
   const handleDelete = useCallback(async () => {
     await api
@@ -76,7 +76,7 @@ const PurchaseDetails: React.FC = () => {
           description: `${Object.values(e.response?.message)}`,
         });
       });
-  }, []);
+  }, [history, toast, state]);
 
   return (
     <SecondLayout topTitle="Compra">

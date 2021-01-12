@@ -19,6 +19,10 @@ export default class Addresses extends BaseSchema {
 
         table.timestamps(true);
       });
+    else
+      this.schema.alterTable(this.tableName, (table) => {
+        table.dropUnique(["cep"]);
+      });
   }
 
   public async down() {

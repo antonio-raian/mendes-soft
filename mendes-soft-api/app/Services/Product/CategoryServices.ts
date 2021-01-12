@@ -6,6 +6,13 @@ export default class CategoryServices {
   }
 
   public async read(search: object) {
+    const key = Object.keys(search)[0];
+    if (key === "name") {
+      console.log(search);
+      return await Category.query()
+        .whereRaw(`LOWER(${key}) LIKE LOWER('${search[key]}')`)
+        .preload("items");
+    }
     return await Category.query()
       .where(search)
       .preload("items")

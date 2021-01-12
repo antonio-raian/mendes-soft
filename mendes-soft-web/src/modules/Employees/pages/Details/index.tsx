@@ -79,7 +79,7 @@ const EmployeeDetails: React.FC = () => {
         description: "Erro ao remover o Funcionário",
       });
     }
-  }, [employee, toast]);
+  }, [employee, toast, history]);
 
   return (
     <>

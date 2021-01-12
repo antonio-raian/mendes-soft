@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -8,13 +9,13 @@ import Input from "@/components/Form/Input";
 import { Button, Container, FormFooter, Section, Separate } from "./styles";
 import Select, { SelectObject } from "@/components/Form/Select";
 import { FiCheck, FiPlus, FiTrash } from "react-icons/fi";
-import { FormHandles, Scope } from "@unform/core";
+import { FormHandles } from "@unform/core";
 import { getValidationErrors } from "@/utils/getValidationErrors";
 import { useToast } from "@/hooks/toast";
 import SecondLayout from "@/layouts/SecondLayout";
 import TableContainer from "@/components/TableContainer";
 import { FormPayment, Status, TypePayment } from "@/utils/prefixedData";
-import { format, parseISO, add } from "date-fns";
+import { format, add } from "date-fns";
 import { useHistory } from "react-router-dom";
 import api from "@/services/api";
 import ModalAddProduct from "../../components/ModalAddProduct";
@@ -103,25 +104,22 @@ const SaleCreate: React.FC = () => {
     localStorage.setItem("@mendes-soft:itens_venda", JSON.stringify(aux));
   }, []);
 
-  const removeItem = useCallback(
-    (item) => {
-      let aux = JSON.parse(
-        localStorage.getItem("@mendes-soft:itens_venda") || "[]"
-      );
+  const removeItem = useCallback((item) => {
+    let aux = JSON.parse(
+      localStorage.getItem("@mendes-soft:itens_venda") || "[]"
+    );
 
-      // Calculate valor total
-      let vAll = 0;
-      aux.map((data: ItemTable) => (vAll += data.value_all));
-      setValueTotal(vAll);
+    // Calculate valor total
+    let vAll = 0;
+    aux.map((data: ItemTable) => (vAll += data.value_all));
+    setValueTotal(vAll);
 
-      aux = aux.filter((i: ItemTable) => i.id !== item.id);
-      setItens(aux);
+    aux = aux.filter((i: ItemTable) => i.id !== item.id);
+    setItens(aux);
 
-      // salvar
-      localStorage.setItem("@mendes-soft:itens_venda", JSON.stringify(aux));
-    },
-    [items, valueTotal]
-  );
+    // salvar
+    localStorage.setItem("@mendes-soft:itens_venda", JSON.stringify(aux));
+  }, []);
 
   const handleSubmit = useCallback(
     async (data) => {
@@ -194,7 +192,7 @@ const SaleCreate: React.FC = () => {
         });
       }
     },
-    [toast, items]
+    [toast, items, history]
   );
 
   return (

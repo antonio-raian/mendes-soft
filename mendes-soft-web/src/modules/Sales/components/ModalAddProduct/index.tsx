@@ -1,3 +1,5 @@
+/* eslint-disable no-template-curly-in-string */
+/*eslint-disable no-empty-pattern */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -18,7 +20,6 @@ import { Storage } from "@/interfaces";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "@/hooks/auth";
 import { ItemTable } from "../../pages/Create";
-import { OptionTypeBase } from "react-select";
 
 interface ModalProps {
   isOpen: boolean;
@@ -72,7 +73,7 @@ const ModalAddProduct: React.FC<ModalProps> = ({
         });
     }
     handlLoad();
-  }, []);
+  }, [history, signOut]);
 
   const handleSubmit = useCallback(
     async (data) => {
@@ -114,7 +115,7 @@ const ModalAddProduct: React.FC<ModalProps> = ({
         });
       }
     },
-    [toast, products]
+    [toast, products, actionButton, setIsOpen]
   );
 
   return (

@@ -116,7 +116,7 @@ const ModalUpdateEmployee: React.FC<ModalProps> = ({
         });
       }
     },
-    [toast, setIsOpen]
+    [toast, setIsOpen, employee]
   );
 
   return (

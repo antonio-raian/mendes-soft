@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import React, { useCallback, useRef } from "react";
 import { Form } from "@unform/web";
 

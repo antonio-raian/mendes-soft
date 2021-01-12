@@ -8,7 +8,6 @@ import { Item, MetaListpaginated } from "@/interfaces";
 import SecondLayout from "@/layouts/SecondLayout";
 import api from "@/services/api";
 import changeSearchBy from "@/utils/changeSearch";
-import { AxiosResponse } from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
@@ -84,7 +83,7 @@ const ProductList: React.FC = () => {
         });
     }
     searchData ? handleLoadSearch() : handleLoad();
-  }, [modalDetails, searchBy, searchData]);
+  }, [modalDetails, searchBy, searchData, history, signOut]);
 
   const changeModal = useCallback(() => {
     setModalDetails((states) => !states);

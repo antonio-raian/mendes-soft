@@ -4,7 +4,7 @@ import ModalDelete from "@/components/ModalDelete";
 import { Category } from "@/interfaces";
 import api from "@/services/api";
 import React, { useCallback, useEffect, useState } from "react";
-import { FiCheck, FiEdit, FiTrash2, FiX } from "react-icons/fi";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
 import ModalUpdateCategory from "../ModalUpdate";
 import { Buttons, Container, Details } from "./styles";
 

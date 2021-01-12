@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -58,7 +59,7 @@ const ModalCreateStorage: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         });
     }
     handlLoad();
-  }, []);
+  }, [history, signOut]);
 
   const handleSubmit = useCallback(
     async (data) => {
@@ -112,7 +113,7 @@ const ModalCreateStorage: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         });
       }
     },
-    [toast, products]
+    [toast, products, setIsOpen]
   );
 
   return (

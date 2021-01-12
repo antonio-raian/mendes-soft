@@ -18,7 +18,7 @@ import { Sale } from "@/interfaces";
 import Loading from "@/components/Loading";
 import { useToast } from "@/hooks/toast";
 import ModalComponent from "@/components/Modal";
-import { FiCheck, FiEdit, FiSave, FiX } from "react-icons/fi";
+import { FiEdit, FiSave, FiX } from "react-icons/fi";
 import { useAuth } from "@/hooks/auth";
 
 const handle = [
@@ -86,14 +86,14 @@ const SaleDetails: React.FC = () => {
         });
     }
     handleLoad();
-  }, []);
+  }, [history, signOut, state]);
 
   const saveParcels = useCallback(async () => {
     console.log(parcels);
     await api.put(`/sale`, {
       sale: { id: sale.id, expected_payment_date: JSON.stringify(parcels) },
     });
-  }, [parcels]);
+  }, [parcels, sale]);
 
   const handleDelete = useCallback(async () => {
     await api
@@ -113,7 +113,7 @@ const SaleDetails: React.FC = () => {
           description: `${Object.values(e.response?.message)}`,
         });
       });
-  }, []);
+  }, [history, state, toast]);
 
   return (
     <>

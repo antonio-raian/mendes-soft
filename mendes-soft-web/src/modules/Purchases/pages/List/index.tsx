@@ -11,7 +11,6 @@ import changeSearchBy from "@/utils/changeSearch";
 import { Status } from "@/utils/prefixedData";
 import { format, parseISO } from "date-fns";
 import React, { useCallback, useEffect, useState } from "react";
-import { FiSearch } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
 import { Container } from "./styles";
 

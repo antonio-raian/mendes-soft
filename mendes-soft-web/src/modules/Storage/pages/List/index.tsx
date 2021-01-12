@@ -34,7 +34,7 @@ const StorageList: React.FC = () => {
   const [storages, setStorage] = useState<Storage[]>([]);
 
   const [selectable, setSelectable] = useState("");
-  const [modalCreate, setModalCreate] = useState(true);
+  const [modalCreate, setModalCreate] = useState(false);
   const [modalDetails, setModalDetails] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -80,7 +80,7 @@ const StorageList: React.FC = () => {
         });
     }
     searchData ? handleLoadItem() : handleLoad();
-  }, [modalDetails, searchBy, searchData, history, signOut]);
+  }, [modalCreate, modalDetails, searchBy, searchData, history, signOut]);
 
   const changeModalDetails = useCallback(() => {
     setModalDetails((states) => !states);

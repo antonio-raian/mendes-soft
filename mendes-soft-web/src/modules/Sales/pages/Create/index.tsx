@@ -21,6 +21,7 @@ import ModalAddProduct from "../../components/ModalAddProduct";
 import { OptionTypeBase } from "react-select";
 import InputGroup from "@/components/InputGroup";
 import { Client } from "@/interfaces";
+import handleError from "@/utils/handleError";
 
 Yup.setLocale({
   number: {
@@ -185,11 +186,11 @@ const SaleCreate: React.FC = () => {
           });
           return;
         }
-        console.log("Erro", error);
+        console.log("Erro", error.response);
         toast.addToast({
           title: "Falha",
           type: "error",
-          description: `${Object.values(error.response)}`,
+          description: handleError(error),
         });
       }
     },

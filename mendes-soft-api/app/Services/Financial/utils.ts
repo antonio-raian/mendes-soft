@@ -17,7 +17,7 @@ export const toStorage = async (
   if (storage.length > 0) {
     await new StorageServices().update({
       ...storage[0].toJSON(),
-      quantity: storage[0].quantity + quantity,
+      quantity: storage[0].quantity + Number(quantity),
       value_sale: gain ? valueGain + valueGain * 0.12 : storage[0].value_sale,
       value_cost: unit_value || storage[0].value_cost,
     });

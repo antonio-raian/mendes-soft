@@ -57,7 +57,7 @@ export default class SalesController {
   public async destroy({ params }: HttpContextContract) {
     const sale = await new SaleServices().read({ id: params.id });
 
-    const items = JSON.parse(sale[0].items);
+    const items = sale[0].items;
 
     await Promise.all(
       items.map(async (item) => {

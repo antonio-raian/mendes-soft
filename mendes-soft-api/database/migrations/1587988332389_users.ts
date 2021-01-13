@@ -17,10 +17,7 @@ export default class UsersSchema extends BaseSchema {
 
         table.timestamps(true);
       });
-    } else
-      this.schema.alterTable(this.tableName, (table) => {
-        table.string("username", 255).notNullable().unique().alter();
-      });
+    } else this.schema.alterTable(this.tableName, (table) => {});
   }
 
   public async down() {

@@ -18,6 +18,7 @@ import InputGroup from "@/components/InputGroup";
 import { Item } from "@/interfaces";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "@/hooks/auth";
+import handleError from "@/utils/handleError";
 
 interface ModalProps {
   isOpen: boolean;
@@ -105,11 +106,11 @@ const ModalCreateStorage: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
           });
           return;
         }
-        console.log(error.response.code);
+        console.log(error.response);
         toast.addToast({
           title: "Falha",
           type: "error",
-          description: `${Object.values(error.response)}`,
+          description: handleError(error),
         });
       }
     },

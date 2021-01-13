@@ -2,7 +2,7 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import SaleServices from "App/Services/Financial/SaleServices";
 import ItemServices from "App/Services/Product/ItemServices";
 import StorageServices from "App/Services/Stock/StorageServices";
-import { fromStorage, toStorage } from "./utils";
+import { fromStorage, toStorage } from "../../../Services/Financial/utils";
 
 export default class SalesController {
   public async create({ request, auth }: HttpContextContract) {
@@ -22,6 +22,7 @@ export default class SalesController {
         )[0];
 
         item["unit_value"] = storage.value_sale;
+        item["name"] = i.name;
         item["total_value"] = item.quantity * storage.value_sale;
 
         value += item.quantity * storage.value_sale;
@@ -32,8 +33,9 @@ export default class SalesController {
       {
         ...sale,
         items: JSON.stringify(sale.items),
+        expected_payment_date: JSON.stringify(sale.expected_payment_date),
         gross_value: value,
-        net_value: value - value * sale.discount,
+        net_value: value - value * (sale.discount / 100),
       },
       user.employee_id,
       client
@@ -55,7 +57,7 @@ export default class SalesController {
   public async destroy({ params }: HttpContextContract) {
     const sale = await new SaleServices().read({ id: params.id });
 
-    const items = JSON.parse(sale[0].items);
+    const items = sale[0].items;
 
     await Promise.all(
       items.map(async (item) => {

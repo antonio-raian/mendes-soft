@@ -6,7 +6,17 @@ export default class CategoryServices {
   }
 
   public async read(search: object) {
-    return await Category.query().where(search).preload("items");
+    const key = Object.keys(search)[0];
+    if (key === "name") {
+      console.log(search);
+      return await Category.query()
+        .whereRaw(`LOWER(${key}) LIKE LOWER('${search[key]}')`)
+        .preload("items");
+    }
+    return await Category.query()
+      .where(search)
+      .preload("items")
+      .orderBy("id", "asc");
   }
 
   public async update(newCategory) {

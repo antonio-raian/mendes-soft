@@ -2,14 +2,14 @@ import Address from "App/Models/Corporate/Address";
 
 export default class AddressServices {
   public async create(newAddress: object, personId: number) {
-    const address = await Address.create(newAddress);
+    const address = await Address.firstOrCreate(newAddress);
 
     await address.related("person").sync([personId]);
     return address;
   }
 
   public async read(search: object) {
-    return await Address.query().where(search);
+    return await Address.query().where(search).orderBy("createAt", "asc");
   }
 
   public async update(newAddress) {

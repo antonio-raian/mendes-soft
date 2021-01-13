@@ -1,12 +1,10 @@
 import Loading from "@/components/Loading";
 import ModalComponent from "@/components/Modal";
 import { useToast } from "@/hooks/toast";
-import { Item, Storage } from "@/interfaces";
-import SecondLayout from "@/layouts/SecondLayout";
+import { Storage } from "@/interfaces";
 import api from "@/services/api";
 import React, { useCallback, useEffect, useState } from "react";
-import { FiCheck, FiEdit, FiTrash2, FiX } from "react-icons/fi";
-import { useHistory } from "react-router-dom";
+import { FiCheck, FiEdit } from "react-icons/fi";
 import { Buttons, Container, Details } from "./styles";
 
 interface ModalProps {
@@ -15,7 +13,7 @@ interface ModalProps {
   itemId: string;
 }
 
-const ModalDetailsProduct: React.FC<ModalProps> = ({
+const ModalDetailsStorage: React.FC<ModalProps> = ({
   isOpen,
   setIsOpen,
   itemId,
@@ -26,21 +24,23 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
   const [update, setUpdate] = useState(false);
 
   const [valueSale, setValueSale] = useState(0);
+  const [valueCost, setValueCost] = useState(0);
   const [quantity, setQuantity] = useState(0);
 
   const [storage, setStorage] = useState({} as Storage);
 
-  async function handleLoad() {
-    await api.get<Storage[]>(`/storage?id=${itemId}`).then((response) => {
-      setStorage(response.data[0]);
-
-      setQuantity(response.data[0].quantity);
-      setValueSale(response.data[0].value_sale);
-
-      setLoading(false);
-    });
-  }
   useEffect(() => {
+    async function handleLoad() {
+      await api.get<Storage[]>(`/storage?id=${itemId}`).then((response) => {
+        setStorage(response.data[0]);
+
+        setQuantity(response.data[0].quantity);
+        setValueSale(response.data[0].value_sale);
+        setValueCost(response.data[0].value_cost);
+
+        setLoading(false);
+      });
+    }
     isOpen && handleLoad();
   }, [isOpen, itemId, update]);
 
@@ -48,7 +48,12 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
     try {
       console.log(valueSale, quantity);
       await api.put("/storage", {
-        storage: { id: storage.id, value_sale: valueSale, quantity },
+        storage: {
+          id: storage.id,
+          value_sale: valueSale,
+          value_cost: valueCost,
+          quantity,
+        },
       });
       toast.addToast({
         title: "Sucesso",
@@ -66,7 +71,7 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
         )}`,
       });
     }
-  }, [setIsOpen, storage, valueSale, quantity]);
+  }, [storage, valueSale, valueCost, quantity, toast]);
 
   return (
     <>
@@ -119,6 +124,19 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
                   )}
                 </p>
                 <p>
+                  <b>Preço de Compra: </b>
+                  R${" "}
+                  {!update ? (
+                    valueCost.toFixed(2)
+                  ) : (
+                    <input
+                      value={valueCost}
+                      type="number"
+                      onChange={(e) => setValueCost(Number(e.target.value))}
+                    />
+                  )}
+                </p>
+                <p>
                   <b>Código de Barra: </b>
                   {storage.item.bar_code}
                 </p>
@@ -144,4 +162,4 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
   );
 };
 
-export default ModalDetailsProduct;
+export default ModalDetailsStorage;

@@ -48,7 +48,7 @@ const PurchaseDetails: React.FC = () => {
         .get<Purchase[]>(`/purchase?id=${state.itemId}`)
         .then((res) => {
           setPurchase(res.data[0]);
-          setItens(JSON.parse(res.data[0].items));
+          setItens(res.data[0].items);
           setLoading(false);
         })
         .catch((e) => {
@@ -56,7 +56,7 @@ const PurchaseDetails: React.FC = () => {
         });
     }
     handleLoad();
-  }, []);
+  }, [state]);
 
   const handleDelete = useCallback(async () => {
     await api
@@ -76,77 +76,74 @@ const PurchaseDetails: React.FC = () => {
           description: `${Object.values(e.response?.message)}`,
         });
       });
-  }, []);
-
-  if (loading)
-    return (
-      <SecondLayout>
-        <Loading />
-      </SecondLayout>
-    );
+  }, [history, toast, state]);
 
   return (
-    <SecondLayout topTitle="Nova Compra">
-      <Container>
-        <Section
-          style={{
-            width: "30%",
-          }}>
-          <label>
-            <b>Compra feita dia:</b>{" "}
-            {format(parseISO(purchase?.created_at), "dd/MM/yyyy")}
-          </label>
-          <span>
-            <b>Funcionário Responsável:</b> {purchase?.employee.person.name}
-          </span>
-          <p>
-            <b>Tipo de Pagamento: </b>
-            {
-              TypePayment.find((tp) => tp.value === purchase.type_payment)
-                ?.label
-            }
-          </p>
-          <p>
-            <b>Situação:</b>{" "}
-            {Status.find((st) => st.value === purchase.status)?.label}
-          </p>
-          <p>
-            <b>Valor total:</b> R$ {purchase.value.toFixed(2)}
-          </p>
-          {purchase.status !== "canceled" && (
-            <Button>
-              <button onClick={handleDelete}>Apagar</button>
-            </Button>
-          )}
-        </Section>
-        <Separate />
-        <Section
-          style={{
-            width: "70%",
-          }}>
-          <TableContainer containerStyle={{ width: "100%" }}>
-            <table>
-              <thead>
-                <tr>
-                  {handle.map((h) => (
-                    <th id={h.id}>{h.name}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {items?.map((item) => (
+    <SecondLayout topTitle="Compra">
+      {loading ? (
+        <Loading />
+      ) : (
+        <Container>
+          <Section
+            style={{
+              width: "30%",
+            }}>
+            <label>
+              <b>Compra feita dia:</b>{" "}
+              {format(parseISO(purchase?.created_at), "dd/MM/yyyy")}
+            </label>
+            <span>
+              <b>Funcionário Responsável:</b> {purchase?.employee.person.name}
+            </span>
+            <p>
+              <b>Tipo de Pagamento: </b>
+              {
+                TypePayment.find((tp) => tp.value === purchase.type_payment)
+                  ?.label
+              }
+            </p>
+            <p>
+              <b>Situação:</b>{" "}
+              {Status.find((st) => st.value === purchase.status)?.label}
+            </p>
+            <p>
+              <b>Valor total:</b> R$ {purchase.value.toFixed(2)}
+            </p>
+            {purchase.status !== "canceled" && (
+              <Button>
+                <button onClick={handleDelete}>Apagar</button>
+              </Button>
+            )}
+          </Section>
+          <Separate />
+          <Section
+            style={{
+              width: "70%",
+            }}>
+            <TableContainer containerStyle={{ width: "100%" }}>
+              <table>
+                <thead>
                   <tr>
-                    <td>{item.name}</td>
-                    <td>{item.quantity}</td>
-                    <td>R$ {Number(item.unit_value).toFixed(2)} </td>
-                    <td>R$ {Number(item.value_all).toFixed(2)} </td>
+                    {handle.map((h) => (
+                      <th id={h.id}>{h.name}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </TableContainer>
-        </Section>
-      </Container>
+                </thead>
+                <tbody>
+                  {items?.map((item) => (
+                    <tr>
+                      <td>{item.name}</td>
+                      <td>{item.quantity}</td>
+                      <td>R$ {Number(item.unit_value).toFixed(2)} </td>
+                      <td>R$ {Number(item.value_all).toFixed(2)} </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TableContainer>
+          </Section>
+        </Container>
+      )}
     </SecondLayout>
   );
 };

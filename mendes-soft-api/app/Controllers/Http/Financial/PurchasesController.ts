@@ -1,7 +1,7 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import PurchaseServices from "App/Services/Financial/PurchaseServices";
 import ItemServices from "App/Services/Product/ItemServices";
-import { fromStorage, toStorage } from "./utils";
+import { fromStorage, toStorage } from "../../../Services/Financial/utils";
 
 export default class PurchasesController {
   public async create({ request, auth }: HttpContextContract) {
@@ -13,6 +13,7 @@ export default class PurchasesController {
     await Promise.all(
       purchase.items.map(async (item) => {
         const i = (await new ItemServices().read({ id: item.id }))[0];
+
         item["name"] = i.name;
         item["internal_code"] = i.internal_code;
         item["bar_code"] = i.bar_code;
@@ -21,8 +22,8 @@ export default class PurchasesController {
         await toStorage(
           i.id,
           Number(item.quantity),
-          i.gain,
-          Number(item.unit_value)
+          Number(item.unit_value),
+          i.gain
         );
       })
     );

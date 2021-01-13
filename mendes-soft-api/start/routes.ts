@@ -73,7 +73,7 @@ Route.group(() => {
   Route.put("", "Corporate/EmployesController.update");
   Route.delete(":id", "Corporate/EmployesController.destroy");
 })
-  .prefix("/employe")
+  .prefix("/employee")
   .middleware(["auth"]);
 
 // Clients
@@ -108,6 +108,7 @@ Route.group(() => {
 
 // Storages
 Route.group(() => {
+  Route.post("", "Stock/StoragesController.create");
   Route.get("", "Stock/StoragesController.show");
   Route.put("", "Stock/StoragesController.update");
 })

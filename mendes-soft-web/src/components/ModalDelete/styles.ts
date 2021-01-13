@@ -8,13 +8,6 @@ export const Container = styled.div`
   flex-direction: column;
 `;
 
-export const Details = styled.div`
-  p {
-    font-size: 20px;
-    margin: 10px 20px;
-  }
-`;
-
 export const Buttons = styled.div`
   display: flex;
   height: 8vh;

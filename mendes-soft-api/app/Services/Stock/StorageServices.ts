@@ -1,5 +1,6 @@
 import Item from "App/Models/Product/Item";
 import Storage from "App/Models/Stock/Storage";
+import ItemServices from "../Product/ItemServices";
 
 export default class StorageServices {
   public async create(newStorage: object, itemId: number) {
@@ -10,12 +11,33 @@ export default class StorageServices {
     return storage;
   }
 
-  public async read(search: object) {
+  public async read(search) {
+    const key = Object.keys(search)[0];
+    if (key === "bar_code" || key === "name") {
+      const itens = (await new ItemServices().read(search)).rows;
+
+      return await Storage.query()
+        .whereIn(
+          "item_id",
+          itens.map((i) => i.id)
+        )
+        .preload("item", (q) => q.preload("category"))
+        .orderBy("id", "asc")
+        .paginate(search.page, 8);
+    }
+    if (search.page)
+      return await Storage.query()
+        .preload("item", (q) => {
+          q.preload("category");
+        })
+        .orderBy("id", "asc")
+        .paginate(search.page, 8);
     return await Storage.query()
       .where(search)
       .preload("item", (q) => {
         q.preload("category");
-      });
+      })
+      .orderBy("id", "asc");
   }
 
   public async update(newStorage) {

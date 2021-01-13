@@ -1,3 +1,6 @@
+/* eslint-disable no-template-curly-in-string */
+/* eslint-disable no-empty-pattern */
+
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -64,7 +67,7 @@ const ModalAddProduct: React.FC<ModalProps> = ({
         });
     }
     handlLoad();
-  }, []);
+  }, [history, signOut]);
 
   const handleSubmit = useCallback(
     async (data) => {
@@ -98,9 +101,15 @@ const ModalAddProduct: React.FC<ModalProps> = ({
           });
           return;
         }
+        console.log(error.response);
+        toast.addToast({
+          title: "Falha",
+          type: "error",
+          description: `${Object.values(error.response)}`,
+        });
       }
     },
-    [toast, products]
+    [toast, products, setIsOpen, actionButton]
   );
 
   return (

@@ -4,21 +4,23 @@ export default class UsersSchema extends BaseSchema {
   protected tableName = "users";
 
   public async up() {
-    this.schema.createTable(this.tableName, (table) => {
-      table.increments("id").primary();
+    if (!(await this.schema.hasTable(this.tableName))) {
+      this.schema.createTable(this.tableName, (table) => {
+        table.increments("id").primary();
 
-      table.bigInteger("employee_id").references("employes.id");
+        table.bigInteger("employee_id").references("employes.id");
 
-      table.string("username", 255).notNullable();
-      table.string("password", 180).notNullable();
-      table.string("remember_me_token").nullable();
-      table.boolean("active").defaultTo(true);
+        table.string("username", 255).notNullable().unique();
+        table.string("password", 180).notNullable();
+        table.string("remember_me_token").nullable();
+        table.boolean("active").defaultTo(true);
 
-      table.timestamps(true);
-    });
+        table.timestamps(true);
+      });
+    } else this.schema.alterTable(this.tableName, (table) => {});
   }
 
   public async down() {
-    this.schema.dropTable(this.tableName);
+    // this.schema.dropTable(this.tableName);
   }
 }

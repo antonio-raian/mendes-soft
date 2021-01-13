@@ -8,7 +8,6 @@ import * as Yup from "yup";
 import { getValidationErrors } from "@/utils/getValidationErrors";
 import { Form } from "@unform/web";
 import Input from "@/components/Form/Input";
-import { FiLogIn } from "react-icons/fi";
 import logo from "@/assets/images/LogoName.png";
 import icon from "@/assets/images/icon.png";
 
@@ -58,11 +57,11 @@ const Login = () => {
   );
   return (
     <Container>
-      <img src={icon} />
+      <img src={icon} alt="icon" />
       <Content>
         <Form ref={formRef} onSubmit={handleSubmit}>
           <Logo>
-            <img src={logo} />
+            <img src={logo} alt="logo" />
           </Logo>
           <Input name="username" label="Usuário" />
           <Input name="password" label="Senha" type="password" />

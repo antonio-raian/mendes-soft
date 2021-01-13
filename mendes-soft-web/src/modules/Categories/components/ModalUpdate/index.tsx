@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -13,6 +14,7 @@ import { useToast } from "@/hooks/toast";
 import ModalComponent from "@/components/Modal";
 import api from "@/services/api";
 import { Category } from "@/interfaces";
+import Loading from "@/components/Loading";
 
 interface ModalProps {
   isOpen: boolean;
@@ -36,19 +38,22 @@ const ModalUpdateCategory: React.FC<ModalProps> = ({
   const toast = useToast();
   const [category, setCategory] = useState({} as Category);
 
-  const handleLoad = async () => {
-    try {
-      const response = await api.get<Category[]>(`/category?id=${itemId}`);
-
-      setCategory(response.data[0]);
-    } catch (e) {
-      console.log("erro no update", e.response);
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const handleLoad = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get<Category[]>(`/category?id=${itemId}`);
+
+        setCategory(response.data[0]);
+        setLoading(false);
+      } catch (e) {
+        console.log("erro no update", e.response);
+      }
+    };
     isOpen && handleLoad();
-  }, [isOpen]);
+  }, [isOpen, itemId]);
 
   const handleSubmit = useCallback(
     async (data) => {
@@ -99,18 +104,22 @@ const ModalUpdateCategory: React.FC<ModalProps> = ({
       setIsOpen={setIsOpen}
       width={500}>
       <Container>
-        <Form
-          initialData={category}
-          ref={formRef}
-          onSubmit={handleSubmit}
-          style={{ width: "100%" }}>
-          <Input name="name" label="Nome" />
-          <Input name="description" label="Descrição" />
-          <button type="submit">
-            <FiCheck size={25} />
-            Concluir
-          </button>
-        </Form>
+        {loading ? (
+          <Loading />
+        ) : (
+          <Form
+            initialData={category}
+            ref={formRef}
+            onSubmit={handleSubmit}
+            style={{ width: "100%" }}>
+            <Input name="name" label="Nome" />
+            <Input name="description" label="Descrição" />
+            <button type="submit">
+              <FiCheck size={25} />
+              Concluir
+            </button>
+          </Form>
+        )}
       </Container>
     </ModalComponent>
   );

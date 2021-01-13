@@ -1,15 +1,19 @@
+import React, { useCallback, useEffect, useState } from "react";
 import TableContainer from "@/components/TableContainer";
 import TopLists from "@/components/TopLists";
+import EmptyPage from "@/components/EmptyPage";
 import { useAuth } from "@/hooks/auth";
-import { Item, Storage } from "@/interfaces";
+import { MetaListpaginated, Storage } from "@/interfaces";
 import SecondLayout from "@/layouts/SecondLayout";
 import api from "@/services/api";
 import changeSearchBy from "@/utils/changeSearch";
-import React, { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
 import ModalDetails from "../../components/ModalDetails";
+import ModalCreate from "../../components/ModalCreate";
 import { Container } from "./styles";
+import Loading from "@/components/Loading";
+import TableFooter from "@/components/TableFooter";
 
 const handle = [
   { id: "bar_code", name: "Cód. Barra" },
@@ -18,29 +22,54 @@ const handle = [
   { id: "quantity", name: "Quantidade" },
 ];
 
+interface ItensPaginate {
+  data: Storage[];
+  meta: MetaListpaginated;
+}
+
 const StorageList: React.FC = () => {
   const history = useHistory();
   const { signOut } = useAuth();
 
-  const [storages, setStorage] = useState<Storage[]>();
+  const [storages, setStorage] = useState<Storage[]>([]);
 
   const [selectable, setSelectable] = useState("");
+  const [modalCreate, setModalCreate] = useState(false);
   const [modalDetails, setModalDetails] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [searchBy, setSearchBy] = useState("bar_code");
   const [searchData, setSearchData] = useState("");
+  const [metaSearch, setMetaSearch] = useState({} as MetaListpaginated);
   useEffect(() => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
 
   useEffect(() => {
+    setLoading(true);
+    async function handleLoadItem() {
+      await api
+        .get<ItensPaginate>(`/storage?${searchBy}=%${searchData}%&page=1`)
+        .then((response) => {
+          setMetaSearch(response.data.meta);
+          setStorage(response.data.data);
+          setLoading(false);
+        })
+        .catch((e) => {
+          console.log(e);
+          if (e.response?.status === 401) {
+            signOut();
+            history.goBack();
+          }
+        });
+    }
     async function handleLoad() {
       await api
-        .get<Item[]>(`/item?${searchBy}=%${searchData}%`)
+        .get<ItensPaginate>("/storage?page=1")
         .then((response) => {
-          setStorage(
-            response.data.map((item) => ({ ...item.storage, item: item }))
-          );
+          setMetaSearch(response.data.meta);
+          setStorage(response.data.data);
+          setLoading(false);
         })
         .catch((e) => {
           console.log(e.response);
@@ -50,83 +79,130 @@ const StorageList: React.FC = () => {
           }
         });
     }
-    handleLoad();
-  }, [searchData, searchBy]);
+    searchData ? handleLoadItem() : handleLoad();
+  }, [modalCreate, modalDetails, searchBy, searchData, history, signOut]);
 
-  useEffect(() => {
-    async function handleLoad() {
-      await api
-        .get("/storage")
-        .then((response) => {
-          setStorage(response.data);
-        })
-        .catch((e) => {
-          console.log(e.response);
-          if (e.response?.status === 401) {
-            signOut();
-            history.goBack();
-          }
-        });
-    }
-    handleLoad();
-  }, [modalDetails]);
-
-  const changeModal = useCallback(() => {
+  const changeModalDetails = useCallback(() => {
     setModalDetails((states) => !states);
   }, [setModalDetails]);
 
+  const changeModalCreate = useCallback(() => {
+    setModalCreate((states) => !states);
+  }, [setModalCreate]);
+
+  const nextPage = async () => {
+    setLoading(true);
+    await api
+      .get(`/storage?page=${metaSearch.current_page + 1}`)
+      .then((response) => {
+        setMetaSearch(response.data.meta);
+        setStorage(response.data.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
+  };
+
+  const backPage = async () => {
+    setLoading(true);
+    await api
+      .get(`/storage?page=${metaSearch.current_page - 1}`)
+      .then((response) => {
+        setMetaSearch(response.data.meta);
+        setStorage(response.data.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
+  };
+
   return (
-    <SecondLayout topTitle="Estoque">
+    <>
       <ModalDetails
         isOpen={modalDetails}
-        setIsOpen={changeModal}
+        setIsOpen={changeModalDetails}
         itemId={selectable}
       />
 
-      <Container>
-        <TopLists containerStyle={{ justifyContent: "flex-end" }}>
-          <div>
-            <FiSearch size={20} />
-            <input
-              placeholder={`Buscar por ${
-                handle.find((h) => h.id === searchBy)?.name
-              }`}
-              name="search"
-              onChange={(e) => setSearchData(e.target.value)}
-            />
-          </div>
-        </TopLists>
-        <TableContainer>
-          <table>
-            <thead>
-              <tr>
-                {handle.map((h) => (
-                  <th
-                    id={h.id}
-                    onClick={() => changeSearchBy(h.id, setSearchBy, handle)}>
-                    {h.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {storages?.map((stock) => (
-                <tr
-                  onClick={() => {
-                    setSelectable(stock.id);
-                    changeModal();
-                  }}>
-                  <td>{stock.item.bar_code}</td>
-                  <td>{stock.item.name}</td>
-                  <td>R$ {stock.value_sale.toFixed(2)}</td>
-                  <td>{stock.quantity} </td>
+      <ModalCreate isOpen={modalCreate} setIsOpen={changeModalCreate} />
+
+      <SecondLayout topTitle="Estoque">
+        <Container>
+          <TopLists>
+            <button onClick={changeModalCreate}>Adicionar Estoque</button>
+            <div>
+              <FiSearch size={20} />
+              <input
+                placeholder={`Buscar por ${
+                  handle.find((h) => h.id === searchBy)?.name
+                }`}
+                name="search"
+                onChange={(e) => {
+                  setSearchData(e.target.value);
+                }}
+              />
+            </div>
+          </TopLists>
+
+          <TableContainer>
+            <table>
+              <thead>
+                <tr>
+                  {handle.map((h) => (
+                    <th
+                      id={h.id}
+                      onClick={() => changeSearchBy(h.id, setSearchBy, handle)}>
+                      {h.name}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableContainer>
-      </Container>
-    </SecondLayout>
+              </thead>
+              {loading ? (
+                <Loading />
+              ) : storages.length <= 0 ? (
+                <tbody>
+                  <tr>
+                    <td colSpan={4}>
+                      <EmptyPage />
+                    </td>
+                  </tr>
+                </tbody>
+              ) : (
+                <tbody>
+                  {storages.map((stock) => (
+                    <tr
+                      onClick={() => {
+                        setSelectable(stock?.id);
+                        changeModalDetails();
+                      }}>
+                      <td>{stock?.item.bar_code}</td>
+                      <td>{stock?.item.name}</td>
+                      <td>R$ {stock?.value_sale.toFixed(2)}</td>
+                      <td>{stock?.quantity} </td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
+              <TableFooter
+                meta={metaSearch}
+                actionNext={nextPage}
+                actionBack={backPage}
+              />
+            </table>
+          </TableContainer>
+        </Container>
+      </SecondLayout>
+    </>
   );
 };
 

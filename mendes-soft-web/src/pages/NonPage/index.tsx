@@ -8,7 +8,7 @@ const NonPage = () => {
   return (
     <SecondLayout topTitle="Em Desenvolvimento">
       <Container>
-        <img src={notFound} />
+        <img src={notFound} alt="404image" />
       </Container>
     </SecondLayout>
   );

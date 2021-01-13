@@ -2,13 +2,13 @@ import Contact from "App/Models/Corporate/Contact";
 
 export default class ContactServices {
   public async create(newContact: object, personId: number) {
-    const contact = await Contact.create(newContact);
+    const contact = await Contact.firstOrCreate(newContact);
     await contact.related("person").sync([personId]);
     return contact;
   }
 
   public async read(search: object) {
-    return await Contact.query().where(search);
+    return await Contact.query().where(search).orderBy("createAt", "asc");
   }
 
   public async update(newContact) {

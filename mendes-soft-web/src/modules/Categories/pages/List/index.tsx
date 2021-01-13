@@ -1,3 +1,5 @@
+import EmptyPage from "@/components/EmptyPage";
+import Loading from "@/components/Loading";
 import TableContainer from "@/components/TableContainer";
 import TopLists from "@/components/TopLists";
 import { Category } from "@/interfaces";
@@ -27,12 +29,15 @@ const CategoryList: React.FC = () => {
   const [selectable, setSelectable] = useState("");
   const [modalCreate, setModalCreate] = useState(false);
   const [modalDetails, setModalDetails] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function handleLoad() {
+      setLoading(true);
       const response = await api.get<Category[]>("/category");
 
       setCategories(response.data);
+      setLoading(false);
     }
     handleLoad();
   }, [modalCreate, modalDetails]);
@@ -70,6 +75,7 @@ const CategoryList: React.FC = () => {
               />
             </div>
           </TopLists>
+
           <TableContainer>
             <table>
               <thead>
@@ -83,19 +89,31 @@ const CategoryList: React.FC = () => {
                   ))}
                 </tr>
               </thead>
-              <tbody>
-                {categories.map((cat) => (
-                  <tr
-                    onClick={() => {
-                      setSelectable(cat.id);
-                      changeModalDetails();
-                    }}>
-                    <td>{cat.id}</td>
-                    <td>{cat.name}</td>
-                    <td>{cat.description}</td>
+              {loading ? (
+                <Loading />
+              ) : categories.length <= 0 ? (
+                <tbody>
+                  <tr>
+                    <td colSpan={3}>
+                      <EmptyPage />
+                    </td>
                   </tr>
-                ))}
-              </tbody>
+                </tbody>
+              ) : (
+                <tbody>
+                  {categories.map((cat) => (
+                    <tr
+                      onClick={() => {
+                        setSelectable(cat.id);
+                        changeModalDetails();
+                      }}>
+                      <td>{cat.id}</td>
+                      <td>{cat.name}</td>
+                      <td>{cat.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
             </table>
           </TableContainer>
         </Container>

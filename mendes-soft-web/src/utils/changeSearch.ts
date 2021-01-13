@@ -1,4 +1,4 @@
-import React, { SetStateAction, useCallback } from "react";
+import React, { SetStateAction } from "react";
 
 const changeSearchBy = (
   module: string,

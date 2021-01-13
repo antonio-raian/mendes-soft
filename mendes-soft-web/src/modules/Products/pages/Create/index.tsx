@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -50,7 +51,7 @@ const ProductCreate: React.FC = () => {
         });
     }
     handleLoad();
-  }, []);
+  }, [history, signOut]);
 
   const handleSubmit = useCallback(
     async (data) => {
@@ -61,7 +62,7 @@ const ProductCreate: React.FC = () => {
         const schope = Yup.object().shape({
           category: Yup.number().required("Categoria é obrigatória!").min(1),
           item: Yup.object().shape({
-            bar_code: Yup.string().required("Código de Barra Obrigatório"),
+            bar_code: Yup.string(),
             name: Yup.string().required("Nome Obrigatório"),
             description: Yup.string(),
             gain: Yup.number(),

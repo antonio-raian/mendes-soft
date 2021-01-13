@@ -1,11 +1,15 @@
 import Person from "App/Models/Corporate/Person";
 
 export default class PersonServices {
-  public async create(newPerson: object, addressId: number, contactId: number) {
+  public async create(
+    newPerson: object,
+    addressId?: number,
+    contactId?: number
+  ) {
     const person = await Person.firstOrCreate(newPerson);
 
-    await person.related("addresses").sync([addressId]);
-    await person.related("contacts").sync([contactId]);
+    addressId && (await person.related("addresses").sync([addressId]));
+    contactId && (await person.related("contacts").sync([contactId]));
 
     return person;
   }
@@ -14,7 +18,8 @@ export default class PersonServices {
     return await Person.query()
       .where(search)
       .preload("addresses")
-      .preload("contacts");
+      .preload("contacts")
+      .orderBy("name", "asc");
   }
 
   public async update(newPerson) {

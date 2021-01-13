@@ -18,7 +18,18 @@ export default class SaleServices {
     return sale;
   }
 
-  public async read(search: object) {
+  public async read(search) {
+    const key = Object.keys(search)[0];
+    if (key == "page")
+      return await Sale.query()
+        .preload("employee", (q) => {
+          q.preload("person");
+        })
+        .preload("client", (q) => {
+          q.preload("person");
+        })
+        .orderBy("createdAt", "desc")
+        .paginate(search.page, 8);
     return await Sale.query()
       .where(search)
       .preload("employee", (q) => {
@@ -26,7 +37,8 @@ export default class SaleServices {
       })
       .preload("client", (q) => {
         q.preload("person");
-      });
+      })
+      .orderBy("createdAt", "desc");
   }
 
   public async update(newSale) {

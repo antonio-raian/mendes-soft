@@ -1,14 +1,16 @@
+import EmptyPage from "@/components/EmptyPage";
+import Loading from "@/components/Loading";
 import TableContainer from "@/components/TableContainer";
+import TableFooter from "@/components/TableFooter";
 import TopLists from "@/components/TopLists";
 import { useAuth } from "@/hooks/auth";
-import { Purchase } from "@/interfaces";
+import { MetaListpaginated, Purchase } from "@/interfaces";
 import SecondLayout from "@/layouts/SecondLayout";
 import api from "@/services/api";
 import changeSearchBy from "@/utils/changeSearch";
 import { Status } from "@/utils/prefixedData";
 import { format, parseISO } from "date-fns";
 import React, { useCallback, useEffect, useState } from "react";
-import { FiSearch } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
 import { Container } from "./styles";
 
@@ -20,23 +22,33 @@ const handle = [
   { id: "status", name: "Situação" },
 ];
 
+interface ItensPaginate {
+  data: Purchase[];
+  meta: MetaListpaginated;
+}
+
 const PurchaseList: React.FC = () => {
   const history = useHistory();
   const { signOut } = useAuth();
 
-  const [purchases, setPurchases] = useState<Purchase[]>();
+  const [purchases, setPurchases] = useState<Purchase[]>([]);
 
+  const [loading, setLoading] = useState(true);
+  const [metaSearch, setMetaSearch] = useState({} as MetaListpaginated);
   const [searchBy, setSearchBy] = useState("id");
   useEffect(() => {
     changeSearchBy(searchBy, setSearchBy, handle);
   }, [searchBy]);
 
   useEffect(() => {
+    setLoading(true);
     async function handleLoad() {
       await api
-        .get("/purchase")
+        .get<ItensPaginate>("/purchase?page=1")
         .then((resPurch) => {
-          setPurchases(resPurch.data);
+          setMetaSearch(resPurch.data.meta);
+          setPurchases(resPurch.data.data);
+          setLoading(false);
         })
         .catch((e) => {
           console.log(e.response);
@@ -49,9 +61,48 @@ const PurchaseList: React.FC = () => {
     handleLoad();
   }, [history, signOut]);
 
-  const toDetailsPage = useCallback((itemId) => {
-    history.push("/compras/detalhes", { itemId });
-  }, []);
+  const toDetailsPage = useCallback(
+    (itemId) => {
+      history.push("/compras/detalhes", { itemId });
+    },
+    [history]
+  );
+
+  const nextPage = async () => {
+    setLoading(true);
+    await api
+      .get(`/purchase?page=${metaSearch.current_page + 1}`)
+      .then((response) => {
+        setMetaSearch(response.data.meta);
+        setPurchases(response.data.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
+  };
+
+  const backPage = async () => {
+    setLoading(true);
+    await api
+      .get(`/purchase?page=${metaSearch.current_page - 1}`)
+      .then((response) => {
+        setMetaSearch(response.data.meta);
+        setPurchases(response.data.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
+  };
 
   return (
     <SecondLayout topTitle="Compras">
@@ -60,7 +111,7 @@ const PurchaseList: React.FC = () => {
           <button onClick={() => history.push("/compras/cadastro")}>
             Nova Compra
           </button>
-          <div>
+          {/* <div>
             <FiSearch size={20} />
             <input
               placeholder={`Buscar por ${
@@ -68,7 +119,7 @@ const PurchaseList: React.FC = () => {
               }`}
               name="search"
             />
-          </div>
+          </div> */}
         </TopLists>
         <TableContainer>
           <table>
@@ -83,20 +134,44 @@ const PurchaseList: React.FC = () => {
                 ))}
               </tr>
             </thead>
-            <tbody>
-              {purchases?.map((purc) => (
-                <tr
-                  onClick={() => {
-                    toDetailsPage(purc.id);
-                  }}>
-                  <td>{purc.id}</td>
-                  <td>{format(parseISO(purc.created_at), "dd/MM/yyyy")}</td>
-                  <td>{purc.employee.person.name}</td>
-                  <td>{purc.value} </td>
-                  <td>{Status.find((s) => s.value === purc.status)?.label} </td>
+            {loading ? (
+              <Loading />
+            ) : purchases.length <= 0 ? (
+              <tbody>
+                <tr>
+                  <td colSpan={5}>
+                    <EmptyPage />
+                  </td>
                 </tr>
-              ))}
-            </tbody>
+              </tbody>
+            ) : (
+              <tbody>
+                {purchases.map((purc) => (
+                  <tr
+                    onClick={() => {
+                      toDetailsPage(purc.id);
+                    }}>
+                    <td>{purc.id}</td>
+                    <td>
+                      {format(
+                        parseISO(purc.expected_payment_date),
+                        "dd/MM/yyyy"
+                      )}
+                    </td>
+                    <td>{purc.employee.person.name}</td>
+                    <td>{purc.value} </td>
+                    <td>
+                      {Status.find((s) => s.value === purc.status)?.label}{" "}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
+            <TableFooter
+              meta={metaSearch}
+              actionNext={nextPage}
+              actionBack={backPage}
+            />
           </table>
         </TableContainer>
       </Container>

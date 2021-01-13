@@ -7,6 +7,21 @@ export interface Person {
   contacts: [Contact];
 }
 
+export interface Client {
+  id: string;
+  limit: number;
+  active: boolean;
+  person: Person;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  remember_me_token: string;
+  active: boolean;
+  employee: Employee;
+}
+
 export interface Address {
   id: string;
   cep: string;
@@ -50,16 +65,33 @@ export interface Storage {
   id: string;
   quantity: number;
   value_sale: number;
+  value_cost: number;
   active: boolean;
   item: Item;
 }
 
 export interface Purchase {
   id: string;
-  items: string;
+  items: [];
   value: number;
   type_payment: string;
   expected_payment_date: string;
+  status: string;
+  active: boolean;
+  created_at: string;
+  employee: Employee;
+}
+
+export interface Sale {
+  id: string;
+  items: [];
+  gross_value: number;
+  net_value: number;
+  discount: number;
+  type_payment: string;
+  form_payment: string;
+  payment_date: string;
+  expected_payment_date: [];
   status: string;
   active: boolean;
   created_at: string;
@@ -72,4 +104,18 @@ export interface Employee {
   salary: number;
   active: boolean;
   person: Person;
+  user: User;
+}
+
+// Utils
+export interface MetaListpaginated {
+  current_page: number;
+  first_page: number;
+  first_page_url: string;
+  last_page: number;
+  last_page_url: string;
+  next_page_url: number;
+  per_page: number;
+  previous_page_url: number;
+  total: number;
 }

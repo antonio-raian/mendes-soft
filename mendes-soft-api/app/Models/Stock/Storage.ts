@@ -9,6 +9,7 @@ export default class Storage extends BaseModel {
   @column({ serializeAs: null }) public "item_id": number;
   @column() public "quantity": number;
   @column() public "value_sale": number;
+  @column() public "value_cost": number;
 
   @column()
   public active: boolean;

@@ -13,9 +13,9 @@ const Loading: React.FC<LoadingProps> = ({ height, width }) => {
       <Loader
         type="ThreeDots"
         color="#07f"
-        height={height || 100}
-        width={width || 100}
-        timeout={1000}
+        height={height || 50}
+        width={width || 50}
+        timeout={10000}
       />
     </div>
   );

@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Form } from "@unform/web";
 
@@ -65,7 +66,7 @@ const ProductUpdate: React.FC = () => {
       setLoading(false);
     }
     handleLoad();
-  }, [state]);
+  }, [state, history, signOut]);
 
   const handleSubmit = useCallback(
     async (data) => {
@@ -75,7 +76,7 @@ const ProductUpdate: React.FC = () => {
         const schope = Yup.object().shape({
           item: Yup.object().shape({
             id: Yup.number(),
-            bar_code: Yup.string().required("Código de Barra Obrigatório"),
+            bar_code: Yup.string(),
             name: Yup.string().required("Nome Obrigatório"),
             description: Yup.string(),
             gain: Yup.number(),
@@ -110,47 +111,54 @@ const ProductUpdate: React.FC = () => {
           });
           return;
         }
+        console.log(error.response);
+        toast.addToast({
+          title: "Falha",
+          type: "error",
+          description: `${Object.values(error.response)}`,
+        });
       }
     },
-    [toast]
+    [toast, history]
   );
-
-  if (loading)
-    return (
-      <SecondLayout topTitle="Atualização  Produto">
-        <Loading />
-      </SecondLayout>
-    );
 
   return (
     <SecondLayout topTitle="Atualização  Produto">
-      <Container>
-        <Form
-          initialData={{
-            item: {
-              ...product,
-              category_id: categories.find(
-                (cat) => cat.value === product.category?.id
-              ),
-            },
-          }}
-          ref={formRef}
-          onSubmit={handleSubmit}
-          style={{ width: "100%" }}>
-          <Scope path="item">
-            <Input name="id" label="Código Interno" disabled={true} />
-            <Input name="bar_code" label="Código de Barra" />
-            <Input name="name" label="Nome" />
-            <Input name="description" label="Descrição" />
-            <Input name="gain" label="Lucro (%)" type="number" min={0} />
-            <Select name="category_id" label="Categoria" options={categories} />
-          </Scope>
-          <button type="submit">
-            <FiCheck size={25} />
-            Concluir
-          </button>
-        </Form>
-      </Container>
+      {loading ? (
+        <Loading />
+      ) : (
+        <Container>
+          <Form
+            initialData={{
+              item: {
+                ...product,
+                category_id: categories.find(
+                  (cat) => cat.value === product.category?.id
+                ),
+              },
+            }}
+            ref={formRef}
+            onSubmit={handleSubmit}
+            style={{ width: "100%" }}>
+            <Scope path="item">
+              <Input name="id" label="Código Interno" disabled={true} />
+              <Input name="bar_code" label="Código de Barra" />
+              <Input name="name" label="Nome" />
+              <Input name="description" label="Descrição" />
+              <Input name="gain" label="Lucro (%)" type="number" min={0} />
+              <Select
+                name="category_id"
+                label="Categoria"
+                options={categories}
+              />
+            </Scope>
+            <button type="submit">
+              <FiCheck size={25} />
+              Concluir
+            </button>
+          </Form>
+        </Container>
+      )}
     </SecondLayout>
   );
 };

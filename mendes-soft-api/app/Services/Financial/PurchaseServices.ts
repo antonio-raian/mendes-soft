@@ -11,12 +11,21 @@ export default class PurchaseServices {
     return purchase;
   }
 
-  public async read(search: object) {
+  public async read(search) {
+    const key = Object.keys(search)[0];
+    if (key == "page")
+      return await Purchase.query()
+        .preload("employee", (q) => {
+          q.preload("person");
+        })
+        .orderBy("expected_payment_date", "desc")
+        .paginate(search.page, 8);
     return await Purchase.query()
       .where(search)
       .preload("employee", (q) => {
         q.preload("person");
-      });
+      })
+      .orderBy("expected_payment_date", "desc");
   }
 
   public async update(newPurchase) {

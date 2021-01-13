@@ -4,6 +4,9 @@ const handleError = (error: any) => {
   switch (data.code) {
     case "NO_ENOUGTH_STOCK":
       return `${data.message} não possui estoque suficiente!`;
+
+    case "DUPLICATE":
+      return `Já existe esse item cadastrado, se precisar, tente editá-lo na tela de detalhes!`;
     default:
       return "";
   }

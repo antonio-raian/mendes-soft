@@ -107,6 +107,7 @@ const SaleDetails: React.FC = () => {
         history.goBack();
       })
       .catch((e) => {
+        console.log(e);
         toast.addToast({
           title: "Falha",
           type: "error",

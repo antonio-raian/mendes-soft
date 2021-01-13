@@ -28,6 +28,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     if (String(error.code) === "23502") {
       return ctx.response.status(400).send({
         title: "Faltou dado pra registo",
+        code: "MISSING_DATA",
         message: `Informe o ${error.column} para criação de ${error.table}`,
       });
     }
@@ -39,6 +40,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
       const value = detail[1];
       return ctx.response.status(400).send({
         title: "Duplicado",
+        code: "DUPLICATE",
         message: `Já existe um registro ${column} com o valor ${value}`,
       });
     }
@@ -47,6 +49,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     if (String(error.code) === "22P02") {
       return ctx.response.status(400).send({
         title: "Campo inválido",
+        code: "DATA_INVALID",
         message: `O tipo de dado informado é inválido: ${error.message
           .substring(error.message.indexOf("type"))
           .slice(5)}`,
@@ -57,6 +60,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     if (String(error.code) === "22001") {
       return ctx.response.status(400).send({
         title: "Muitos caracteres",
+        code: "MANY_CHARS",
         message: `O tipo de dado informado contém mais dados do que o permitido ${error.message.substring(
           error.message.indexOf("(")
         )}`,
@@ -65,6 +69,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     //Já possui algum vinculo
     if (String(error.code) === "23503") {
       return ctx.response.status(400).send({
+        code: "VINCULATED",
         message: `Já possui um vinculo com ${error.table}, não pode apagar`,
       });
     }

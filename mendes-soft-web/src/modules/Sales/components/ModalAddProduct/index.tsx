@@ -148,6 +148,7 @@ const ModalAddProduct: React.FC<ModalProps> = ({
               label="Quantidade"
               type="number"
               defaultValue={0}
+              step="0.001"
             />
             <Input
               name="unit_value"

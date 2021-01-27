@@ -21,7 +21,7 @@ const TopModule = ({ title }: TopProps) => {
           }}
         />
       </Back>
-      <Logo>
+      <Logo onClick={() => history.replace("/dashboard")}>
         <img src={icon} alt="logo" />
       </Logo>
       <Title>

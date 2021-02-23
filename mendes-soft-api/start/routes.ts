@@ -96,6 +96,16 @@ Route.group(() => {
   .prefix("/category")
   .middleware(["auth"]);
 
+// MeasureUnits
+Route.group(() => {
+  Route.post("", "Product/MeasureUnitsController.create");
+  Route.get("", "Product/MeasureUnitsController.show");
+  Route.put("", "Product/MeasureUnitsController.update");
+  Route.delete(":id", "Product/MeasureUnitsController.destroy");
+})
+  .prefix("/measure_unit")
+  .middleware(["auth"]);
+
 // Items
 Route.group(() => {
   Route.post("", "Product/ItemsController.create");

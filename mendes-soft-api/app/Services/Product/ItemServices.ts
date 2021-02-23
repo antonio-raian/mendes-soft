@@ -1,16 +1,20 @@
 import Category from "App/Models/Product/Category";
 import Item from "App/Models/Product/Item";
+import MeasureUnit from "App/Models/Product/MeasureUnit";
 import { updateStorage } from "../Financial/utils";
 import CategoryServices from "./CategoryServices";
 
 export default class ItemServices {
-  public async create(newItem: Item, categoryId: number) {
+  public async create(newItem: Item, categoryId: number, measureId: number) {
     const category = await Category.findOrFail(categoryId);
+    const measure = await MeasureUnit.findOrFail(measureId);
     const item = new Item();
     await item.merge(newItem);
     item.gain = Number(newItem.gain);
 
     await item.related("category").associate(category);
+    await item.related("measure").associate(measure);
+
     return item;
   }
 
@@ -21,6 +25,7 @@ export default class ItemServices {
         .whereRaw(`LOWER(${key}) like  LOWER('${search[key]}')`)
         .preload("category")
         .preload("storage")
+        .preload("measure")
         .orderBy("id", "asc")
         .paginate(search.page, 8);
     if (key === "category") {
@@ -33,17 +38,20 @@ export default class ItemServices {
           categories.map((c) => c.id)
         )
         .preload("category")
+        .preload("measure")
         .orderBy("id", "asc")
         .paginate(search.page, 8);
     }
     if (search.page)
       return await Item.query()
         .preload("category")
+        .preload("measure")
         .orderBy("id", "asc")
         .paginate(search.page, 8);
     return await Item.query()
       .where(search)
       .preload("category")
+      .preload("measure")
       .orderBy("name", "asc");
   }
 

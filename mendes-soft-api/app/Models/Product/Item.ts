@@ -9,6 +9,7 @@ import {
 } from "@ioc:Adonis/Lucid/Orm";
 import Category from "./Category";
 import Storage from "../Stock/Storage";
+import MeasureUnit from "./MeasureUnit";
 
 export default class Item extends BaseModel {
   @column({ isPrimary: true })
@@ -16,6 +17,8 @@ export default class Item extends BaseModel {
 
   @column({ serializeAs: null })
   public "category_id": number;
+  @column({ serializeAs: null })
+  public "measure_id": number;
   @column()
   public "internal_code": string;
   @column()
@@ -39,6 +42,9 @@ export default class Item extends BaseModel {
   // Relations
   @belongsTo(() => Category, { foreignKey: "category_id" })
   public category: BelongsTo<typeof Category>;
+
+  @belongsTo(() => MeasureUnit, { foreignKey: "measure_id" })
+  public measure: BelongsTo<typeof MeasureUnit>;
 
   @hasOne(() => Storage, { foreignKey: "id" })
   public storage: HasOne<typeof Storage>;

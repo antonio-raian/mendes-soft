@@ -184,7 +184,9 @@ const ProductList: React.FC = () => {
                         setSelectable(item.id);
                         changeModal();
                       }}>
-                      <td>{item.id}</td>
+                      <td className={item.measure ? "" : "incomplete"}>
+                        {item.id}
+                      </td>
                       <td>{item.name}</td>
                       <td>{item.bar_code}</td>
                       <td>{item.category.name} </td>

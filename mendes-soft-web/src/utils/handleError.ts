@@ -7,6 +7,7 @@ const handleError = (error: any) => {
 
     case "DUPLICATE":
       return `Já existe esse item cadastrado, se precisar, tente editá-lo na tela de detalhes!`;
+
     default:
       return "";
   }

@@ -49,6 +49,13 @@ export interface Category {
   items: [Item];
 }
 
+export interface MeasureUnit {
+  id: string;
+  description: string;
+  initials: string;
+  active: boolean;
+}
+
 export interface Item {
   id: string;
   internal_code: string;
@@ -58,6 +65,7 @@ export interface Item {
   gain: number;
   active: boolean;
   category: Category;
+  measure: MeasureUnit;
   storage: Storage;
 }
 

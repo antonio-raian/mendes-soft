@@ -78,6 +78,10 @@ const ModalDetailsProduct: React.FC<ModalProps> = ({
                   {product.category?.name}
                 </p>
                 <p>
+                  <b>Unidade de Medida: </b>
+                  {product.measure?.description}
+                </p>
+                <p>
                   <b>Lucro: </b>
                   {product.gain}%
                 </p>

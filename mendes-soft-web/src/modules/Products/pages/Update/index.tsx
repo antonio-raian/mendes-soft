@@ -14,7 +14,7 @@ import { getValidationErrors } from "@/utils/getValidationErrors";
 import { useToast } from "@/hooks/toast";
 import SecondLayout from "@/layouts/SecondLayout";
 import { useHistory, useLocation } from "react-router-dom";
-import { Category, Item } from "@/interfaces";
+import { Category, Item, MeasureUnit } from "@/interfaces";
 import api from "@/services/api";
 import { useAuth } from "@/hooks/auth";
 import Loading from "@/components/Loading";
@@ -39,6 +39,7 @@ const ProductUpdate: React.FC = () => {
 
   const [product, setProduct] = useState({} as Item);
   const [categories, setCategories] = useState<SelectObject[]>([]);
+  const [measures, setMeasures] = useState<SelectObject[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,6 +55,14 @@ const ProductUpdate: React.FC = () => {
               value: cat.id,
             }));
             setCategories(aux);
+          });
+          await api.get<MeasureUnit[]>("/measure_unit").then((response) => {
+            setMeasures(
+              response.data.map((meas) => ({
+                label: meas.description,
+                value: meas.id,
+              }))
+            );
           });
         })
         .catch((e) => {
@@ -81,6 +90,9 @@ const ProductUpdate: React.FC = () => {
             description: Yup.string(),
             gain: Yup.number(),
             category_id: Yup.number()
+              .required("Categoria é obrigatória!")
+              .min(1),
+            measure_id: Yup.number()
               .required("Categoria é obrigatória!")
               .min(1),
           }),
@@ -135,6 +147,9 @@ const ProductUpdate: React.FC = () => {
                 category_id: categories.find(
                   (cat) => cat.value === product.category?.id
                 ),
+                measure_id: measures.find(
+                  (meas) => meas.value === product.measure?.id
+                ),
               },
             }}
             ref={formRef}
@@ -150,6 +165,11 @@ const ProductUpdate: React.FC = () => {
                 name="category_id"
                 label="Categoria"
                 options={categories}
+              />
+              <Select
+                name="measure_id"
+                label="Uniadde de Medida"
+                options={measures}
               />
             </Scope>
             <button type="submit">

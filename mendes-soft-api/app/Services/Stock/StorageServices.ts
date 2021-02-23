@@ -21,21 +21,21 @@ export default class StorageServices {
           "item_id",
           itens.map((i) => i.id)
         )
-        .preload("item", (q) => q.preload("category"))
+        .preload("item", (q) => q.preload("category").preload("measure"))
         .orderBy("id", "asc")
         .paginate(search.page, 8);
     }
     if (search.page)
       return await Storage.query()
         .preload("item", (q) => {
-          q.preload("category");
+          q.preload("category").preload("measure");
         })
         .orderBy("id", "asc")
         .paginate(search.page, 8);
     return await Storage.query()
       .where(search)
       .preload("item", (q) => {
-        q.preload("category");
+        q.preload("category").preload("measure");
       })
       .orderBy("id", "asc");
   }

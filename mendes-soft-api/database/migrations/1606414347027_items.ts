@@ -9,6 +9,7 @@ export default class Items extends BaseSchema {
         table.bigIncrements("id");
 
         table.bigInteger("category_id").references("categories.id");
+        table.bigInteger("measure_id").references("measure_units.id");
         table.string("bar_code");
         table.string("name").notNullable();
         table.string("description").notNullable();
@@ -17,7 +18,10 @@ export default class Items extends BaseSchema {
 
         table.timestamps(true);
       });
-    }
+    } else
+      this.schema.alterTable(this.tableName, (table) => {
+        table.bigInteger("measure_id").references("measure_units.id");
+      });
   }
 
   public async down() {

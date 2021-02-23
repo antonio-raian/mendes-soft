@@ -22,7 +22,7 @@ export default class Storages extends BaseSchema {
       });
     else
       this.schema.alterTable(this.tableName, (table) => {
-        table.bigInteger("item_id").notNullable().unique().alter();
+        // table.bigInteger("item_id").notNullable().unique().alter();
       });
   }
 

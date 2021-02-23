@@ -14,7 +14,7 @@ import { getValidationErrors } from "@/utils/getValidationErrors";
 import { useToast } from "@/hooks/toast";
 import SecondLayout from "@/layouts/SecondLayout";
 import api from "@/services/api";
-import { Category } from "@/interfaces";
+import { Category, MeasureUnit } from "@/interfaces";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "@/hooks/auth";
 
@@ -32,23 +32,31 @@ const ProductCreate: React.FC = () => {
   const { signOut } = useAuth();
 
   const [categories, setCategories] = useState<SelectObject[]>([]);
+  const [measures, setMeasures] = useState<SelectObject[]>([]);
 
   useEffect(() => {
     async function handleLoad() {
-      await api
-        .get<Category[]>("/category")
-        .then((response) => {
+      try {
+        await api.get<Category[]>("/category").then((response) => {
           setCategories(
             response.data.map((cat) => ({ label: cat.name, value: cat.id }))
           );
-        })
-        .catch((e) => {
-          console.log(e.response);
-          if (e.response?.status === 401) {
-            signOut();
-            history.goBack();
-          }
         });
+        await api.get<MeasureUnit[]>("/measure_unit").then((response) => {
+          setMeasures(
+            response.data.map((meas) => ({
+              label: meas.description,
+              value: meas.id,
+            }))
+          );
+        });
+      } catch (e) {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      }
     }
     handleLoad();
   }, [history, signOut]);
@@ -61,6 +69,9 @@ const ProductCreate: React.FC = () => {
 
         const schope = Yup.object().shape({
           category: Yup.number().required("Categoria é obrigatória!").min(1),
+          measure: Yup.number()
+            .required("Unidade de Medida é obrigatória!")
+            .min(1),
           item: Yup.object().shape({
             bar_code: Yup.string(),
             name: Yup.string().required("Nome Obrigatório"),
@@ -83,6 +94,7 @@ const ProductCreate: React.FC = () => {
 
         history.goBack();
       } catch (error) {
+        console.log(error.response);
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErrors(error);
 
@@ -120,6 +132,12 @@ const ProductCreate: React.FC = () => {
             name="category"
             label="Categoria"
             options={categories}
+          />
+          <Select
+            defaultValue={{ label: "Selecione uma Uniade de Medida", value: 0 }}
+            name="measure"
+            label="Uniadde de Medida"
+            options={measures}
           />
           <button type="submit">
             <FiCheck size={25} />

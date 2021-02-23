@@ -182,8 +182,8 @@ const EmployeeDetails: React.FC = () => {
                   <table>
                     <thead>
                       <tr>
-                        <th>Telefone</th>
                         <th>Email</th>
+                        <th>Telefone</th>
                       </tr>
                     </thead>
                     <tbody>

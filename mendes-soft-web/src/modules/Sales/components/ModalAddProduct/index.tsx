@@ -45,6 +45,7 @@ const ModalAddProduct: React.FC<ModalProps> = ({
   const toast = useToast();
 
   const [valueUnit, setValueUnit] = useState(0);
+  const [unit, setUnit] = useState<string>();
 
   const [products, setProducts] = useState<SelectObject[]>([]);
   const [storages, setStorages] = useState<Storage[]>([]);
@@ -140,12 +141,19 @@ const ModalAddProduct: React.FC<ModalProps> = ({
                     ?.value_sale.toFixed(2)
                 ) || 0
               );
+              console.log(
+                storages.find((store) => store.item.id === e.value)?.item
+              );
+              setUnit(
+                storages.find((store) => store.item.id === e.value)?.item
+                  ?.measure?.initials
+              );
             }}
           />
           <InputGroup>
             <Input
               name="quantity"
-              label="Quantidade"
+              label={`Quantidade ${unit ? "(" + unit + ")" : ""}`}
               type="number"
               defaultValue={0}
               step="0.001"

@@ -7,7 +7,7 @@ const Products: React.FC = () => {
     return [
       { id: 1, label: "Produtos", path: "/produtos/lista" },
       { id: 2, label: "Categorias", path: "/categorias/lista" },
-      { id: 3, label: "Relatórios", path: "/produtos/relatorios" },
+      { id: 3, label: "Unidades de Medida", path: "/unidades_medida/lista" },
     ];
   }, []);
 

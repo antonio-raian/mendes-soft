@@ -35,6 +35,9 @@ export const Container = styled.section`
           cursor: pointer;
         }
       }
+      .incomplete {
+        border: 2px solid red;
+      }
     }
 
     td {

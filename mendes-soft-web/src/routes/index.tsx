@@ -29,6 +29,7 @@ import SaleDetails from "@/modules/Sales/pages/Details";
 import EmployeeList from "@/modules/Employees/pages/List";
 import EmployeeCreate from "@/modules/Employees/pages/Create";
 import EmployeeDetails from "@/modules/Employees/pages/Details";
+import MeasureUnitList from "@/modules/MeasureUnits/pages/List";
 
 const Routes = () => {
   return (
@@ -55,6 +56,12 @@ const Routes = () => {
         exact
         path="/categorias/lista"
         component={CategoryList}
+      />
+      <Route
+        isPrivate
+        exact
+        path="/unidades_medida/lista"
+        component={MeasureUnitList}
       />
       <Route
         isPrivate

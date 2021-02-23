@@ -3,9 +3,9 @@ import ItemServices from "App/Services/Product/ItemServices";
 
 export default class ItemsController {
   public async create({ request }: HttpContextContract) {
-    const { item, category } = request.all();
+    const { item, category, measure } = request.all();
 
-    return await new ItemServices().create(item, category);
+    return await new ItemServices().create(item, category, measure);
   }
 
   public async show({ request }: HttpContextContract) {

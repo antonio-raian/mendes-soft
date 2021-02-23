@@ -6,12 +6,14 @@ import { Buttons, Container, Page } from "./styles";
 interface FooterProps {
   meta: MetaListpaginated;
   actionNext?: () => void;
+  goToAction: (value: number) => void;
   actionBack?: () => void;
 }
 
 const TableFooter: React.FC<FooterProps> = ({
   meta,
   actionNext,
+  goToAction,
   actionBack,
   ...rest
 }) => {
@@ -32,7 +34,17 @@ const TableFooter: React.FC<FooterProps> = ({
               color={meta.previous_page_url ? "#000000" : "#ddd"}
             />
             <Page>
-              <b>{meta.current_page}</b>/{meta.last_page}
+              <input
+                style={{ width: "15%" }}
+                type="number"
+                min={1}
+                defaultValue={meta.current_page}
+                onKeyPress={(e) => {
+                  if (e.key == "Enter")
+                    goToAction(Number(e.currentTarget.value));
+                }}
+              />
+              /{meta.last_page}
             </Page>
             <BiSkipNext
               size={30}

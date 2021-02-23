@@ -94,6 +94,7 @@ const ProductCreate: React.FC = () => {
 
         history.goBack();
       } catch (error) {
+        console.log(error.response);
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErrors(error);
 

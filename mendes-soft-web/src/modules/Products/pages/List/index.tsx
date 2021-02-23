@@ -107,6 +107,24 @@ const ProductList: React.FC = () => {
       });
   };
 
+  const goToPage = async (value: number) => {
+    setLoading(true);
+    await api
+      .get(`/item?page=${value}`)
+      .then((response) => {
+        setMetaSearch(response.data.meta);
+        setProducts(response.data.data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log(e.response);
+        if (e.response?.status === 401) {
+          signOut();
+          history.goBack();
+        }
+      });
+  };
+
   const backPage = async () => {
     setLoading(true);
     await api
@@ -197,6 +215,7 @@ const ProductList: React.FC = () => {
               <TableFooter
                 meta={metaSearch}
                 actionNext={nextPage}
+                goToAction={goToPage}
                 actionBack={backPage}
               />
             </table>

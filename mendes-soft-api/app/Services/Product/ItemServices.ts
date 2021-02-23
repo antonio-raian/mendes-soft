@@ -19,7 +19,16 @@ export default class ItemServices {
   }
 
   public async read(search) {
+    console.log("serach", search);
     const key = Object.keys(search)[0];
+    if (key === "id")
+      return await Item.query()
+        .where({ id: search[key] })
+        .preload("category")
+        .preload("storage")
+        .preload("measure")
+        .orderBy("id", "asc")
+        .paginate(search.page, 8);
     if (key === "bar_code" || key === "name" || key === "description")
       return await Item.query()
         .whereRaw(`LOWER(${key}) like  LOWER('${search[key]}')`)

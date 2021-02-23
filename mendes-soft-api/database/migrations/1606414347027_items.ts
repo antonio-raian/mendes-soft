@@ -20,7 +20,7 @@ export default class Items extends BaseSchema {
       });
     } else
       this.schema.alterTable(this.tableName, (table) => {
-        // table.bigInteger("measure_id").references("measure_units.id");
+        table.bigInteger("measure_id").references("measure_units.id");
       });
   }
 

@@ -18,10 +18,7 @@ export default class Items extends BaseSchema {
 
         table.timestamps(true);
       });
-    } else
-      this.schema.alterTable(this.tableName, (table) => {
-        table.bigInteger("measure_id").references("measure_units.id");
-      });
+    } else this.schema.alterTable(this.tableName, (table) => {});
   }
 
   public async down() {
